@@ -1,6 +1,6 @@
 # Analiza projekta json-parser — plan rada
 
-## Faza 1: Repozitorijum i početna provera (Active)
+## Faza 1: Repozitorijum i početna provera ✅ COMPLETE
 
 **Cilj:** Reproduktivan seminarski repozitorijum sa zaključanom verzijom analiziranog projekta.
 
@@ -10,7 +10,7 @@
 - ✅ Projekat preveden pomoću zvanične `configure`/`make` putanje.
 - ✅ Postojeći C test program preveden i uspešno izvršen.
 - ✅ Dodata zvanična CI konfiguracija kursa.
-- ⏳ Napraviti i pushovati početni commit.
+- ✅ Napravljen i pushovan početni commit.
 
 **Isporučivo:** čista i proverena osnova za sve naredne analize.
 
