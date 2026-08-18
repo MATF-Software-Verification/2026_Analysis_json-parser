@@ -1,0 +1,19 @@
+name: tickets
+on: [push, issues]
+
+jobs:
+  tickets:
+    name: Tickets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Tickets
+        id: tickets
+        uses: lee-dohm/select-matching-issues@v1
+        with:
+          format: raw
+          query: 'is:open'
+          token: ${{ github.token }}
+      - name: Report issues
+        run: |
+          echo "=== Open issues ===" 
+          grep 'http' ${{ steps.tickets.outputs.path }} && exit 1 || exit 0

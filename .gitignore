@@ -1,0 +1,7 @@
+# Lokalni izlazi build procesa analiziranog submodula
+*.log
+*.tmp
+.DS_Store
+
+# Privremeni lokalni artefakti seminarskog repozitorijuma
+build/
