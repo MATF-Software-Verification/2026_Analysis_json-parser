@@ -8,3 +8,4 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - run: bash <( wget -qO- https://raw.githubusercontent.com/MATF-Software-Verification/VS-project-ci/main/gate )
+  

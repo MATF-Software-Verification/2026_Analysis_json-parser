@@ -17,3 +17,4 @@ jobs:
         run: |
           echo "=== Open issues ===" 
           grep 'http' ${{ steps.tickets.outputs.path }} && exit 1 || exit 0
+
