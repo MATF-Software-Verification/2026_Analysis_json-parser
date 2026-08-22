@@ -14,16 +14,16 @@
 
 **Isporučivo:** čista i proverena osnova za sve naredne analize.
 
-## Faza 2: Razumevanje parsera i strategija testiranja (Pending)
+## Faza 2: Razumevanje parsera i strategija testiranja ✅ COMPLETE
 
 **Cilj:** Razumeti javni API, ključne putanje parsera, memorijski model i postojeće testove pre dodavanja novih analiza.
 
-- Mapirati `json_parse`, `json_parse_ex`, alokaciju i oslobađanje stabla.
-- Popisati klase validnih i nevalidnih JSON ulaza.
-- Definisati očekivana svojstva i oracle za testove/fuzzing.
-- Konačno izabrati najmanje šest tehnika uz najmanje dva alata koja nisu rađena na vežbama.
+- ✅ Mapirani su `json_parse`, `json_parse_ex`, alokacija i oslobađanje stabla.
+- ✅ Popisane su klase validnih i nevalidnih JSON ulaza.
+- ✅ Definisana su očekivana svojstva i oracle za testove/fuzzing.
+- ✅ Izabrano je šest tehnika, uključujući AFL++ i `cppcheck` kao dva alata koja nisu rađena na vežbama.
 
-## Faza 3: Jedinični testovi i pokrivenost (Pending)
+## Faza 3: Jedinični testovi i pokrivenost (Active)
 
 **Cilj:** Dodati razumljive testove graničnih slučajeva i izmeriti line/branch coverage pomoću `lcov`.
 

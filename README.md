@@ -43,19 +43,20 @@ cc -std=c89 -ansi -Wall -Wpedantic -Werror \
 
 Početna provera na neizmenjenom analiziranom commit-u uspešno prevodi statičku i deljenu biblioteku i izvršava postojeći C test program bez neuspešnih provera.
 
-## Planirane tehnike
+## Izabrane tehnike
 
-Konačan spisak biće potvrđen nakon početnih eksperimenata. Trenutni kandidati su:
+Analiza će koristiti sledećih šest tehnika:
 
-1. jedinični testovi uz merenje pokrivenosti koda (`lcov`);
-2. fuzz testiranje pomoću LLVM `libFuzzer`;
-3. dinamička analiza memorije pomoću Valgrind Memcheck-a;
-4. statička analiza pomoću Clang Static Analyzer-a;
-5. fuzz testiranje pomoću AFL++ — alat koji nije obrađen na vežbama;
-6. statička bezbednosna analiza pomoću CodeQL-a — alat koji nije obrađen na vežbama;
-7. opciono: ograničeno proveravanje modela pomoću CBMC-a.
+1. jedinične testove uz merenje pokrivenosti pomoću `lcov`-a;
+2. dinamičku analizu memorije pomoću Valgrind Memcheck-a;
+3. fuzz testiranje pomoću LLVM `libFuzzer`-a;
+4. statičku analizu pomoću Clang Static Analyzer-a;
+5. coverage-guided fuzz testiranje pomoću AFL++ — alat koji nije obrađen na vežbama;
+6. statičku analizu pomoću `cppcheck`-a — alat koji nije obrađen na vežbama.
 
-Za svaki usvojeni alat biće dodat poseban direktorijum sa skriptom za reprodukciju, rezultatima i objašnjenjem.
+`lcov` je podrška jediničnim testovima i ne računa se kao zasebna tehnika. CodeQL i CBMC ostaju opcioni rezervni alati i neće se računati među šest tehnika bez zasebno sprovedene i dokumentovane analize.
+
+Za svaki alat biće dodat poseban direktorijum sa skriptom za reprodukciju, rezultatima i objašnjenjem.
 
 ## Zaključci
 

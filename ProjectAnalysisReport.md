@@ -68,11 +68,54 @@ Program je završio izlaznim kodom `0`.
 Nisu prijavljeni neočekivano prihvaćeni nevalidni ulazi, neočekivano odbijeni validni ulazi niti nepodudaranje očekivanog broja test fajlova.
 Ovaj rezultat predstavlja početno stanje, a ne dokaz potpune ispravnosti parsera.
 
-## 6. Plan analize
+## 6. Obim analize
 
-Planirani skup obuhvata jedinične testove uz pokrivenost koda, fuzz testiranje, dinamičku analizu memorije i statičku analizu.
-Najmanje dva izabrana alata neće biti alati obrađeni na vežbama.
-Konačan izbor biće potvrđen tek nakon kratkih eksperimenata izvodljivosti.
+Primarni predmet analize su `json.c`, javni interfejs iz `json.h` i ponašanje funkcija `json_parse`, `json_parse_ex`, `json_value_free` i `json_value_free_ex`. Analiza obuhvata prihvatanje i odbijanje ulaza, izgradnju DOM stabla, obradu brojeva i stringova, ograničenje memorije, prilagođene alokatore i oslobađanje delimično ili potpuno izgrađenog stabla.
+
+Python binding nije deo primarnog obima. Biće razmatran samo ako neki nalaz direktno pokaže da utiče na C biblioteku koja je predmet rada. Originalni projekat se tokom analize ne menja bez reprodukovanog nalaza i zasebno sačuvanog patch-a.
+
+## 7. Početni skup testova
+
+Postojeći test program razvrstava ulaze u četiri grupe:
+
+| Grupa | Broj | Očekivanje |
+|---|---:|---|
+| `valid-*.json` | 14 | ulaz mora biti prihvaćen u strogom režimu |
+| `invalid-*.json` | 11 | ulaz mora biti odbijen u strogom režimu |
+| `ext-valid-*.json` | 4 | ulaz sa komentarima mora biti prihvaćen kada je opcija uključena |
+| `ext-invalid-*.json` | 3 | neispravan extension ulaz mora biti odbijen |
+
+Validni ulazi obuhvataju korenske proste vrednosti, objekte, nizove, celobrojne i decimalne brojeve, eksponente, Unicode escape sekvence i direktan UTF-8 tekst. Nevalidni ulazi obuhvataju prazan dokument, višak zatvarajućih zagrada, nedostajuće zareze, vodeću nulu, nedovršene literalne vrednosti i neočekivanu zatvarajuću zagradu. Extension testovi proveravaju linijske i blok komentare, komentar na kraju dokumenta, dokument bez vrednosti, nezavršen blok komentar i neispravnu uvodnu sekvencu komentara.
+
+Pored fajlova, `tests/test.c` direktno proverava prazne i obične stringove, escape sekvence, ugrađeni nul-bajt preko `\\u0000` i jedan Unicode surrogate-pair slučaj. Testovi koriste prilagođene funkcije `noisy_alloc` i `noisy_free`, ali njihov ispis nije dokaz da ne postoje curenja ili neispravni memorijski pristupi.
+
+Početni skup uglavnom proverava prihvatanje ili odbijanje dokumenta. Ne proverava sistematski sadržaj kompletnog DOM stabla, sve granice brojčanih tipova, sve putanje neuspešne alokacije, `max_memory`, pokrivenost grana niti robusnost na proizvoljnim binarnim ulazima.
+
+## 8. Verifikaciona svojstva
+
+- **P1:** validan JSON mora biti prihvaćen, a nevalidan odbijen.
+- **P2:** tipovi, dužine i vrednosti u DOM stablu moraju odgovarati ulazu.
+- **P3:** parser ne sme čitati niti pisati van prosleđene granice ulaza i alociranih blokova.
+- **P4:** sve alokacije moraju biti oslobođene na uspešnim i neuspešnim putanjama.
+- **P5:** proizvoljan ulaz ne sme izazvati pad, hang ili grešku sanitizera.
+- **P6:** brojčani overflow mora biti bezbedno obrađen, uključujući prelazak sa `json_integer` na `json_double`.
+- **P7:** `max_memory` i prilagođene funkcije za alokaciju i oslobađanje moraju biti poštovani.
+- **P8:** komentari moraju biti odbijeni u strogom režimu, a podržani samo kada je `json_enable_comments` uključen.
+- **P9:** greške moraju vratiti `NULL`, upotrebljivu dijagnostiku i ne smeju ostaviti nedostupne alokacije.
+
+## 9. Izbor tehnika
+
+| # | Alat/tehnika | Primarna svojstva | Obrazloženje |
+|---:|---|---|---|
+| 1 | Jedinični testovi + `lcov` | P1, P2, P6, P7, P8, P9 | dodaju semantičke i granične provere; `lcov` meri line i branch coverage i ne računa se zasebno |
+| 2 | Valgrind Memcheck | P3, P4, P9 | traži invalid read/write, use-after-free, double free i curenja memorije |
+| 3 | LLVM `libFuzzer` | P3, P5 | coverage-guided generisanje ulaza uz sanitizer instrumentaciju |
+| 4 | Clang Static Analyzer | P3, P4, P9 | analizira putanje bez oslanjanja samo na konkretne test ulaze |
+| 5 | AFL++ | P3, P5 | nezavisni coverage-guided fuzzer i prvi alat koji nije obrađen na vežbama |
+| 6 | `cppcheck` | P3, P4, P6, P9 | dopunska statička analiza C koda i drugi alat koji nije obrađen na vežbama |
+
+Kod `cppcheck` analize fokus će biti na kategorijama `warning`, `error`, `performance` i `portability`, a ne na formatiranju izvornog koda. Time se alat ne koristi kao stilska provera. CodeQL i CBMC ostaju rezervni alati i ne računaju se među šest tehnika bez zasebno reprodukovane analize.
+
 Za svaki usvojeni alat biće sačuvani:
 
 - precizna verzija alata;
@@ -82,12 +125,12 @@ Za svaki usvojeni alat biće sačuvani:
 - tumačenje nalaza;
 - ograničenja i mogući lažno pozitivni rezultati.
 
-## 7. Rezultati pojedinačnih analiza
+## 10. Rezultati pojedinačnih analiza
 
 Ovo poglavlje će biti dopunjavano nakon završetka svake pojedinačne analize.
 Rezultati neće biti proglašavani bagovima dok se ne reprodukuju i ne provere u odnosu na očekivano ponašanje biblioteke.
 
-## 8. Zaključak
+## 11. Zaključak
 
 Početna provera potvrđuje da je izabrani commit u stanju pogodnom za dalju analizu: projekat se prevodi, modularan je i poseduje izvršive početne testove.
 Konačni zaključak biće napisan nakon sprovođenja najmanje šest tehnika i poređenja njihovih nalaza.
