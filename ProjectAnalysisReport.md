@@ -127,10 +127,45 @@ Za svaki usvojeni alat biće sačuvani:
 
 ## 10. Rezultati pojedinačnih analiza
 
-Ovo poglavlje će biti dopunjavano nakon završetka svake pojedinačne analize.
-Rezultati neće biti proglašavani bagovima dok se ne reprodukuju i ne provere u odnosu na očekivano ponašanje biblioteke.
+### 10.1 Jedinični testovi i `lcov`
+
+Napisan je dodatni C89 test program `unit_tests/test_json_parser.c` sa 69 standardnih provera. Testovi obuhvataju korenske proste vrednosti, ugnježdeno DOM stablo, string i Unicode obradu, nevalidne ulaze i error buffer, eksplicitnu dužinu ulaza, režim komentara, granice brojeva, prilagođeni alokator, `max_memory` i `JSON_TRACK_SOURCE`.
+
+Kompletna analiza reprodukuje se skriptom:
+
+```bash
+./unit_tests/run_tests.sh
+```
+
+Standardni skup završio je bez neuspeha:
+
+```text
+Izvrseno provera: 69
+Neuspesnih provera: 0
+```
+
+Pokrivenost je merena samo nad `json-parser/json.c`:
+
+| Metrika | Pokriveno | Ukupno | Pokrivenost |
+|---|---:|---:|---:|
+| Linije | 407 | 503 | 80,9% |
+| Funkcije | 10 | 10 | 100,0% |
+| Grane | 250 | 368 | 67,9% |
+
+Poseban režim testa reprodukuje tri odstupanja:
+
+1. `{"a":1,}` se prihvata kao objekat iako završni zarez nije deo gramatike [RFC 8259](https://www.rfc-editor.org/rfc/rfc8259);
+2. `[1,2,]` se prihvata kao niz iz istog razloga;
+3. uz `JSON_TRACK_SOURCE`, čvor dobija odgovarajući red, ali polje `col` ostaje nula.
+
+Prva dva nalaza potiču iz logike koja dozvoljava zatvaranje objekta ili niza neposredno nakon zareza. Treći nalaz potiče od toga što se `cur_col` postavlja i kopira u čvorove, ali se ne uvećava pri prolasku kroz karaktere. Reprodukcioni testovi i detaljno tumačenje nalaze se u [`unit_tests/Rezultati.md`](unit_tests/Rezultati.md).
+
+Ovi nalazi se tretiraju kao reprodukovana funkcionalna odstupanja. Završni zarezi utiču na usklađenost sa standardnom JSON gramatikom, dok kolona utiče na opcionu dijagnostičku funkcionalnost. Za sada nije utvrđen bezbednosni uticaj.
+
+Ovo poglavlje biće dopunjavano nakon završetka svake sledeće analize. Rezultati neće biti proglašavani bezbednosnim bagovima bez dodatne reprodukcije i procene uticaja.
 
 ## 11. Zaključak
 
-Početna provera potvrđuje da je izabrani commit u stanju pogodnom za dalju analizu: projekat se prevodi, modularan je i poseduje izvršive početne testove.
-Konačni zaključak biće napisan nakon sprovođenja najmanje šest tehnika i poređenja njihovih nalaza.
+Početna provera i dodatni jedinični testovi potvrđuju da se izabrani commit prevodi i da prolazi 69 standardnih provera javnog API-ja i DOM reprezentacije. Dodatni testovi ostvaruju 80,9% pokrivenosti linija i 67,9% pokrivenosti grana u `json.c`.
+
+Istovremeno su reprodukovana tri funkcionalna odstupanja: prihvatanje završnog zareza u objektu i nizu, kao i neispravno praćenje kolone uz `JSON_TRACK_SOURCE`. Konačni zaključak o kvalitetu i memorijskoj bezbednosti biblioteke biće izveden tek nakon sprovođenja preostalih dinamičkih i statičkih analiza.

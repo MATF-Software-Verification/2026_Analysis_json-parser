@@ -5,3 +5,4 @@
 
 # Privremeni lokalni artefakti seminarskog repozitorijuma
 build/
+unit_tests/build/

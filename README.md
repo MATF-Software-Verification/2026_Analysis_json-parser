@@ -58,6 +58,32 @@ Analiza će koristiti sledećih šest tehnika:
 
 Za svaki alat biće dodat poseban direktorijum sa skriptom za reprodukciju, rezultatima i objašnjenjem.
 
+## Reprodukcija sprovedenih analiza
+
+### Jedinični testovi i pokrivenost
+
+Preduslovi na Ubuntu/Debian sistemu:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y gcc lcov
+```
+
+Potrebna je `lcov` verzija 2.0 ili novija; skripta proverava verziju pre pokretanja.
+
+Pokretanje iz korena repozitorijuma:
+
+```bash
+./unit_tests/run_tests.sh
+```
+
+Skripta prevodi i pokreće dodatne C89 testove, reprodukuje dokumentovana odstupanja i meri pokrivenost `json.c`. Detalji su u [`unit_tests/Rezultati.md`](unit_tests/Rezultati.md).
+
 ## Zaključci
 
-Zaključci će biti dopunjavani nakon svake završene i reprodukovane analize. Detaljan opis će se nalaziti u fajlu [`ProjectAnalysisReport.md`](ProjectAnalysisReport.md).
+- Dodatni skup je uspešno izvršio 69/69 standardnih provera javnog API-ja, DOM stabla, podešavanja i memorijskih putanja.
+- Ostvarena je pokrivenost od 80,9% linija, 100,0% funkcija i 67,9% grana u `json.c`.
+- Parser prihvata završni zarez u objektu i nizu, što odstupa od gramatike RFC 8259.
+- Opcija `JSON_TRACK_SOURCE` ispravno prati red, ali kolona ostaje nula jer se interni brojač kolone ne uvećava.
+
+Zaključci će biti dopunjavani nakon svake sledeće reprodukovane analize. Detaljan opis se nalazi u fajlu [`ProjectAnalysisReport.md`](ProjectAnalysisReport.md).

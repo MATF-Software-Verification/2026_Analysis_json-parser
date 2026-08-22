@@ -1,0 +1,11 @@
+Verzije alata
+==============
+gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+lcov: LCOV version 2.0-1
+
+Pokrivenost json.c
+==================
+Summary coverage rate:
+  lines......: 80.9% (407 of 503 lines)
+  functions..: 100.0% (10 of 10 functions)
+  branches...: 67.9% (250 of 368 branches)
