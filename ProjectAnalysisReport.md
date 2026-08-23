@@ -164,8 +164,117 @@ Ovi nalazi se tretiraju kao reprodukovana funkcionalna odstupanja. Završni zare
 
 Ovo poglavlje biće dopunjavano nakon završetka svake sledeće analize. Rezultati neće biti proglašavani bezbednosnim bagovima bez dodatne reprodukcije i procene uticaja.
 
+### 10.2 Valgrind Memcheck
+
+Valgrind Memcheck je pokrenut nad dva skupa testova: dodatnim jediničnim testovima i upstream testovima. Skripta koristi `--leak-check=full`, `--show-leak-kinds=all`, `--track-origins=yes` i `--error-exitcode=99`.
+
+Reprodukcija:
+
+```bash
+./valgrind/run_memcheck.sh
+```
+
+Rezultat: oba skupa završila su bez Memcheck grešaka i bez memorije zauzete na izlazu.
+
+| Skup | Alokacije | Oslobađanja | Greške |
+|---|---:|---:|---:|
+| Dodatni testovi | 65 | 65 | 0 |
+| Upstream testovi | 414 | 414 | 0 |
+
+Čist Memcheck rezultat potvrđuje da na izvršenim putanjama nema curenja niti neispravnih pristupa, ali nije dokaz odsustva svih memorijskih grešaka. Detalji: [`valgrind/Rezultati.md`](valgrind/Rezultati.md).
+
+### 10.3 LLVM libFuzzer
+
+libFuzzer je pokrenut sa AddressSanitizer i UndefinedBehaviorSanitizer instrumentacijom. Harness prosleđuje proizvoljan binarni ulaz parseru u strogom režimu i režimu sa komentarima.
+
+Reprodukcija:
+
+```bash
+./libfuzzer/run_libfuzzer.sh
+```
+
+**Pronađen potvrđen nalaz:** UBSan prijavljuje nedefinisano ponašanje na liniji 437 `json.c`:
+
+```text
+json-parser/json.c:437:34: runtime error: applying non-zero offset 2 to null pointer
+```
+
+Uzrok: u prvom prolazu parsera, kada se zatvori string ključ unutar objekta, `top->u.object.values` još uvek nije alociran i iznosi `NULL`. Linija:
+
+```c
+chars[0] += string_length + 1;
+```
+
+izvršava aritmetiku nad `NULL` pokazivačem, što je nedefinisano ponašanje prema C standardu. Nalaz je reprodukovan deterministički na normalnom JSON dokumentu sa komentarima:
+
+```text
+/* komentar */ {"a":1}
+```
+
+Sačuvan je minimalni reprodukcioni artefakt `results/crash-reprodukcija.bin` (24 bajta). Bezbednosni uticaj nije utvrđen — rezultat se koristi samo kao akumulator dužine, ne za dereferenciranje. Detalji: [`libfuzzer/Rezultati.md`](libfuzzer/Rezultati.md).
+
+### 10.4 Clang Static Analyzer
+
+Clang Static Analyzer je pokrenut nad `json.c` u C89 konfiguraciji sa checkerima `core,unix,security,deadcode`.
+
+Reprodukcija:
+
+```bash
+./clang_static_analyzer/run_analysis.sh
+```
+
+Pronađena 3 nalaza:
+
+| # | Lokacija | Checker | Klasifikacija |
+|---:|---|---|---|
+| 1 | `json.c:683` | `deadcode.DeadStores` | Potvrđen mrtav upis |
+| 2 | `json.c:975` | `security.insecureAPI.strcpy` | Neograničeni `strcpy` u `error_buf` |
+| 3 | `json.c:977` | `security.insecureAPI.strcpy` | Neograničeni `strcpy` rezervne poruke |
+
+Mrtav upis je suvišna dodela `b = 0` koja se nigde ne čita. Dva `strcpy` nalaza predstavljaju isti API problem: `json_parse_ex` ne prima kapacitet `error_buf`, pa ne može da garantuje bezbedno kopiranje. Detalji: [`clang_static_analyzer/Rezultati.md`](clang_static_analyzer/Rezultati.md).
+
+### 10.5 AFL++
+
+AFL++ je pokrenut kao drugi coverage-guided fuzzer, bez sanitizera, u trajanju od 30 sekundi. Ovo je prvi alat koji nije obrađen na vežbama.
+
+Reprodukcija:
+
+```bash
+./aflplusplus/run_afl.sh
+```
+
+Rezultat:
+
+| Metrika | Vrednost |
+|---|---:|
+| Novi korpus elementi | 372 |
+| Pokrivenost | 75,08% |
+| Crash-eva | 0 |
+| Hang-ova | 0 |
+
+AFL++ nije pronašao crash-eve niti hang-ove. Ograničenje: bez sanitizera ne može otkriti UBSan nalaz iz tehnike 3. Detalji: [`aflplusplus/Rezultati.md`](aflplusplus/Rezultati.md).
+
+### 10.6 cppcheck
+
+cppcheck je pokrenut u dve C89 konfiguracije sa fokusom na kategorije `error`, `warning`, `performance` i `portability`. Ovo je drugi alat koji nije obrađen na vežbama.
+
+Reprodukcija:
+
+```bash
+./cppcheck/run_cppcheck.sh
+```
+
+Rezultat: 0 nalaza u obe konfiguracije. Ručna provera je potvrdila da cppcheck nije otkrio ni poznati UBSan problem iz tehnike 3, što je dokumentovano kao ograničenje statičke analize. Detalji: [`cppcheck/Rezultati.md`](cppcheck/Rezultati.md).
+
 ## 11. Zaključak
 
-Početna provera i dodatni jedinični testovi potvrđuju da se izabrani commit prevodi i da prolazi 69 standardnih provera javnog API-ja i DOM reprezentacije. Dodatni testovi ostvaruju 80,9% pokrivenosti linija i 67,9% pokrivenosti grana u `json.c`.
+Sprovedeno je šest tehnika verifikacije nad `json-parser` bibliotekom. Rezultati su:
 
-Istovremeno su reprodukovana tri funkcionalna odstupanja: prihvatanje završnog zareza u objektu i nizu, kao i neispravno praćenje kolone uz `JSON_TRACK_SOURCE`. Konačni zaključak o kvalitetu i memorijskoj bezbednosti biblioteke biće izveden tek nakon sprovođenja preostalih dinamičkih i statičkih analiza.
+1. **Jedinični testovi** su prošli 69/69 provera i ostvarili 80,9% line i 67,9% branch coverage. Pronađena su tri funkcionalna odstupanja: završni zarez u objektu i nizu te neispravno praćenje kolone uz `JSON_TRACK_SOURCE`.
+2. **Valgrind Memcheck** nije pronašao curenja memorije ni neispravne pristupe na izvršenim putanjama.
+3. **libFuzzer** sa UBSan je pronašao potvrđeno nedefinisano ponašanje: aritmetiku nad `NULL` pokazivačem u prvom prolazu parsera (`json.c:437`) kada su komentari uključeni.
+4. **Clang Static Analyzer** je pronašao mrtav upis i dva neograničena `strcpy` poziva u error putanji.
+5. **AFL++** nije pronašao crash-eve niti hang-ove u 30-sekundnom pokretanju bez sanitizera.
+6. **cppcheck** nije pronašao nalaze u ciljanim kategorijama.
+
+Ukupno su pronađena: jedno potvrđeno nedefinisano ponašanje, tri funkcionalna odstupanja od JSON standarda, jedan mrtav upis i dva neograničena `strcpy` poziva. Nije utvrđen direktan bezbednosni uticaj ni memorjska oštećenja. Biblioteka je stabilna na proizvoljnom ulazu, ali sadrži nedefinisano ponašanje koje kompajler i optimizacija mogu iskoristiti na nepredvidiv način.
