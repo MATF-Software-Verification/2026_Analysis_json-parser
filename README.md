@@ -60,30 +60,70 @@ Za svaki alat biće dodat poseban direktorijum sa skriptom za reprodukciju, rezu
 
 ## Reprodukcija sprovedenih analiza
 
-### Jedinični testovi i pokrivenost
-
-Preduslovi na Ubuntu/Debian sistemu:
+### 1. Jedinični testovi i pokrivenost
 
 ```bash
-sudo apt-get update
 sudo apt-get install -y gcc lcov
-```
-
-Potrebna je `lcov` verzija 2.0 ili novija; skripta proverava verziju pre pokretanja.
-
-Pokretanje iz korena repozitorijuma:
-
-```bash
 ./unit_tests/run_tests.sh
 ```
 
-Skripta prevodi i pokreće dodatne C89 testove, reprodukuje dokumentovana odstupanja i meri pokrivenost `json.c`. Detalji su u [`unit_tests/Rezultati.md`](unit_tests/Rezultati.md).
+69/69 provera prolazi; pokrivenost `json.c` 80,9% linija, 100,0% funkcija, 67,9% grana. Detalji: [`unit_tests/Rezultati.md`](unit_tests/Rezultati.md).
+
+### 2. Valgrind Memcheck
+
+```bash
+sudo apt-get install -y gcc valgrind
+./valgrind/run_memcheck.sh
+```
+
+0 grešaka, 0 curenja memorije na oba skupa testova. Detalji: [`valgrind/Rezultati.md`](valgrind/Rezultati.md).
+
+### 3. LLVM libFuzzer
+
+```bash
+sudo apt-get install -y clang
+./libfuzzer/run_libfuzzer.sh
+```
+
+Pronađen potvrđen UBSan nalaz: aritmetika nad NULL pokazivačem u prvom prolazu (`json.c:437`). Detalji: [`libfuzzer/Rezultati.md`](libfuzzer/Rezultati.md).
+
+### 4. Clang Static Analyzer
+
+```bash
+sudo apt-get install -y clang
+./clang_static_analyzer/run_analysis.sh
+```
+
+3 nalaza: mrtav upis i dva neograničena `strcpy`. Detalji: [`clang_static_analyzer/Rezultati.md`](clang_static_analyzer/Rezultati.md).
+
+### 5. AFL++
+
+```bash
+sudo apt-get install -y afl++
+./aflplusplus/run_afl.sh
+```
+
+30-sekundno pokretanje: 0 crash-eva, 0 hang-ova, 75,08% coverage. Detalji: [`aflplusplus/Rezultati.md`](aflplusplus/Rezultati.md).
+
+### 6. cppcheck
+
+```bash
+sudo apt-get install -y cppcheck
+./cppcheck/run_cppcheck.sh
+```
+
+0 nalaza u kategorijama error, warning, performance i portability. Detalji: [`cppcheck/Rezultati.md`](cppcheck/Rezultati.md).
 
 ## Zaključci
 
 - Dodatni skup je uspešno izvršio 69/69 standardnih provera javnog API-ja, DOM stabla, podešavanja i memorijskih putanja.
 - Ostvarena je pokrivenost od 80,9% linija, 100,0% funkcija i 67,9% grana u `json.c`.
+- Valgrind Memcheck nije pronašao curenja memorije ni neispravne pristupe na izvršenim putanjama.
+- libFuzzer sa UBSan je pronašao potvrđeno nedefinisano ponašanje: aritmetiku nad NULL pokazivačem u prvom prolazu parsera (`json.c:437`) kada su komentari uključeni.
+- Clang Static Analyzer je pronašao mrtav upis i dva neograničena `strcpy` poziva.
+- AFL++ nije pronašao crash-eve niti hang-ove u 30-sekundnom pokretanju bez sanitizera.
+- cppcheck nije pronašao nalaze u kategorijama error, warning, performance i portability.
 - Parser prihvata završni zarez u objektu i nizu, što odstupa od gramatike RFC 8259.
 - Opcija `JSON_TRACK_SOURCE` ispravno prati red, ali kolona ostaje nula jer se interni brojač kolone ne uvećava.
 
-Zaključci će biti dopunjavani nakon svake sledeće reprodukovane analize. Detaljan opis se nalazi u fajlu [`ProjectAnalysisReport.md`](ProjectAnalysisReport.md).
+Detaljan opis se nalazi u fajlu [`ProjectAnalysisReport.md`](ProjectAnalysisReport.md).

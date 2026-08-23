@@ -1,0 +1,31 @@
+INFO: Running with entropic power schedule (0xFF, 100).
+INFO: Seed: 2242044167
+INFO: Loaded 1 modules   (1073 inline 8-bit counters): 1073 [0x5fe72c6bb258, 0x5fe72c6bb689), 
+INFO: Loaded 1 PC tables (1073 PCs): 1073 [0x5fe72c6bb690,0x5fe72c6bf9a0), 
+INFO:        4 files found in /home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/corpus
+INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
+INFO: seed corpus: files: 4 min: 23b max: 48b total: 124b rss: 32Mb
+json-parser/json.c:437:34: runtime error: applying non-zero offset 2 to null pointer
+    #0 0x5fe72c66ae31 in json_parse_ex /home/gamzatore/Workspace/2026_Analysis_json-parser/json-parser/json.c:437:34
+    #1 0x5fe72c670285 in LLVMFuzzerTestOneInput /home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/fuzz_json_parser.c:16:12
+    #2 0x5fe72c572cc4 in fuzzer::Fuzzer::ExecuteCallback(unsigned char const*, unsigned long) (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x57cc4) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
+    #3 0x5fe72c5723b9 in fuzzer::Fuzzer::RunOne(unsigned char const*, unsigned long, bool, fuzzer::InputInfo*, bool, bool*) (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x573b9) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
+    #4 0x5fe72c573fd6 in fuzzer::Fuzzer::ReadAndExecuteSeedCorpora(std::vector<fuzzer::SizedFile, std::allocator<fuzzer::SizedFile>>&) (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x58fd6) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
+    #5 0x5fe72c5744e7 in fuzzer::Fuzzer::Loop(std::vector<fuzzer::SizedFile, std::allocator<fuzzer::SizedFile>>&) (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x594e7) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
+    #6 0x5fe72c5619df in fuzzer::FuzzerDriver(int*, char***, int (*)(unsigned char const*, unsigned long)) (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x469df) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
+    #7 0x5fe72c58c066 in main (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x71066) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
+    #8 0x7be2aec2a1c9 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+    #9 0x7be2aec2a28a in __libc_start_main csu/../csu/libc-start.c:360:3
+    #10 0x5fe72c5569c4 in _start (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x3b9c4) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
+
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior json-parser/json.c:437:34 
+MS: 0 ; base unit: 0000000000000000000000000000000000000000
+0x2f,0x2a,0x20,0x6b,0x6f,0x6d,0x65,0x6e,0x74,0x61,0x72,0x20,0x2a,0x2f,0x20,0x7b,0x22,0x61,0x22,0x3a,0x31,0x7d,0xa,
+/* komentar */ {\"a\":1}\012
+artifact_prefix='/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/artifacts/'; Test unit written to /home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/artifacts/crash-b7b38631dc8f544aa1bd38a6582cceec2785e20c
+Base64: Lyoga29tZW50YXIgKi8geyJhIjoxfQo=
+stat::number_of_executed_units: 2
+stat::average_exec_per_sec:     0
+stat::new_units_added:          0
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              32

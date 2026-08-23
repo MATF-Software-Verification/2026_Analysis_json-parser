@@ -6,3 +6,9 @@
 # Privremeni lokalni artefakti seminarskog repozitorijuma
 build/
 unit_tests/build/
+valgrind/build/
+libfuzzer/build/
+aflplusplus/build/
+aflplusplus/results/findings/
+cppcheck/build/
+compile_flags.txt

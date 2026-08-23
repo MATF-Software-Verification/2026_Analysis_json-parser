@@ -1,0 +1,19 @@
+Okruzenje analize
+==================
+valgrind-3.22.0
+gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
+json-parser commit: 8ac4477ad3e63dc107e17ad49484edaa17d18d35
+
+Dodatni jedinicni testovi
+=========================
+==387527==     in use at exit: 0 bytes in 0 blocks
+==387527==   total heap usage: 65 allocs, 65 frees, 6,839 bytes allocated
+==387527== All heap blocks were freed -- no leaks are possible
+==387527== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+Upstream testovi
+===============
+==387540==     in use at exit: 0 bytes in 0 blocks
+==387540==   total heap usage: 414 allocs, 414 frees, 172,046 bytes allocated
+==387540== All heap blocks were freed -- no leaks are possible
+==387540== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

@@ -1,0 +1,7 @@
+Cppcheck verzija: Cppcheck 2.13.0
+Standard: C89
+Platforma: unix64
+Izvor: json-parser/json.c
+Omogućene kategorije: error (podrazumevano), warning, performance, portability
+Dodatno: exhaustive analiza i inconclusive nalazi
+Konfiguracije: _ANSI_SOURCE; _ANSI_SOURCE + JSON_TRACK_SOURCE

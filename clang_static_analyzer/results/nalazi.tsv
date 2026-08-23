@@ -1,0 +1,4 @@
+checker	linija	kolona	poruka
+deadcode.DeadStores	683	37	Value stored to 'b' is never read
+security.insecureAPI.strcpy	975	10	Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer (CWE-119)
+security.insecureAPI.strcpy	977	10	Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer (CWE-119)

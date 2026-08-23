@@ -1,0 +1,705 @@
+string comparison on line 217 succeeded
+string comparison on line 218 succeeded
+string comparison on line 219 succeeded
+string comparison on line 220 succeeded
+string comparison on line 221 succeeded
+string comparison on line 222 succeeded
+string comparison on line 223 succeeded
+string comparison on line 224 succeeded
+string comparison on line 225 succeeded
+string comparison on line 226 succeeded
+string comparison on line 227 succeeded
+
+
+valid-0000.json
+calloc 48 bytes: 0x4b77860
+calloc 48 bytes: 0x4b778d0
+calloc 48 bytes: 0x4b77940
+calloc 48 bytes: 0x4b779b0
+calloc 48 bytes: 0x4b77a20
+calloc 48 bytes: 0x4b77a90
+calloc 48 bytes: 0x4b77b00
+calloc 48 bytes: 0x4b77b70
+calloc 48 bytes: 0x4b77be0
+calloc 48 bytes: 0x4b77c50
+calloc 48 bytes: 0x4b77cc0
+calloc 48 bytes: 0x4b77d30
+calloc 48 bytes: 0x4b77da0
+calloc 48 bytes: 0x4b77e10
+calloc 48 bytes: 0x4b77e80
+calloc 48 bytes: 0x4b77ef0
+calloc 48 bytes: 0x4b77f60
+calloc 48 bytes: 0x4b77fd0
+calloc 48 bytes: 0x4b78040
+calloc 48 bytes: 0x4b780b0
+calloc 48 bytes: 0x4b78120
+calloc 48 bytes: 0x4b78190
+calloc 48 bytes: 0x4b78200
+calloc 48 bytes: 0x4b78270
+calloc 48 bytes: 0x4b782e0
+calloc 48 bytes: 0x4b78350
+calloc 48 bytes: 0x4b783c0
+calloc 48 bytes: 0x4b78430
+calloc 48 bytes: 0x4b784a0
+calloc 48 bytes: 0x4b78510
+calloc 48 bytes: 0x4b78580
+calloc 48 bytes: 0x4b785f0
+calloc 48 bytes: 0x4b78660
+calloc 48 bytes: 0x4b786d0
+calloc 48 bytes: 0x4b78740
+calloc 48 bytes: 0x4b787b0
+calloc 48 bytes: 0x4b78820
+calloc 48 bytes: 0x4b78890
+calloc 48 bytes: 0x4b78900
+calloc 48 bytes: 0x4b78970
+calloc 48 bytes: 0x4b789e0
+calloc 48 bytes: 0x4b78a50
+calloc 48 bytes: 0x4b78ac0
+calloc 48 bytes: 0x4b78b30
+calloc 48 bytes: 0x4b78ba0
+calloc 48 bytes: 0x4b78c10
+calloc 48 bytes: 0x4b78c80
+calloc 48 bytes: 0x4b78cf0
+calloc 48 bytes: 0x4b78d60
+calloc 48 bytes: 0x4b78dd0
+calloc 48 bytes: 0x4b78e40
+calloc 48 bytes: 0x4b78eb0
+calloc 48 bytes: 0x4b78f20
+calloc 48 bytes: 0x4b78f90
+calloc 48 bytes: 0x4b79000
+calloc 48 bytes: 0x4b79070
+calloc 48 bytes: 0x4b790e0
+calloc 48 bytes: 0x4b79150
+calloc 48 bytes: 0x4b791c0
+calloc 48 bytes: 0x4b79230
+calloc 48 bytes: 0x4b792a0
+calloc 48 bytes: 0x4b79310
+calloc 48 bytes: 0x4b79380
+calloc 48 bytes: 0x4b793f0
+calloc 48 bytes: 0x4b79460
+calloc 48 bytes: 0x4b794d0
+calloc 48 bytes: 0x4b79540
+calloc 48 bytes: 0x4b795b0
+calloc 48 bytes: 0x4b79620
+calloc 48 bytes: 0x4b79690
+calloc 48 bytes: 0x4b79700
+calloc 48 bytes: 0x4b79770
+calloc 48 bytes: 0x4b797e0
+calloc 48 bytes: 0x4b79850
+calloc 48 bytes: 0x4b798c0
+calloc 48 bytes: 0x4b79930
+calloc 48 bytes: 0x4b799a0
+calloc 48 bytes: 0x4b79a10
+calloc 48 bytes: 0x4b79a80
+calloc 48 bytes: 0x4b79af0
+calloc 48 bytes: 0x4b79b60
+calloc 48 bytes: 0x4b79bd0
+calloc 48 bytes: 0x4b79c40
+calloc 48 bytes: 0x4b79cb0
+calloc 48 bytes: 0x4b79d20
+calloc 48 bytes: 0x4b79d90
+calloc 48 bytes: 0x4b79e00
+malloc 32 bytes: 0x4b79e70
+malloc 103 bytes: 0x4b79ed0
+malloc 40 bytes: 0x4b79f80
+malloc 110 bytes: 0x4b79ff0
+malloc 9 bytes: 0x4b7a0a0
+malloc 25 bytes: 0x4b7a0f0
+malloc 1819 bytes: 0x4b7a150
+malloc 17 bytes: 0x4b7a8b0
+malloc 14 bytes: 0x4b7a910
+malloc 6 bytes: 0x4b7a960
+malloc 18 bytes: 0x4b7a9b0
+malloc 16 bytes: 0x4b7aa10
+malloc 26 bytes: 0x4b7aa60
+malloc 30 bytes: 0x4b7aac0
+malloc 10 bytes: 0x4b7ab20
+malloc 1 bytes: 0x4b7ab70
+malloc 17 bytes: 0x4b7abc0
+malloc 20 bytes: 0x4b7ac20
+malloc 17 bytes: 0x4b7ac80
+malloc 20 bytes: 0x4b7ace0
+malloc 25 bytes: 0x4b7ad40
+malloc 21 bytes: 0x4b7ada0
+malloc 18 bytes: 0x4b7ae00
+malloc 23 bytes: 0x4b7ae60
+malloc 25 bytes: 0x4b7aec0
+malloc 6 bytes: 0x4b7af20
+malloc 45 bytes: 0x4b7af70
+malloc 60 bytes: 0x4b7afe0
+malloc 3 bytes: 0x4b7b060
+malloc 19 bytes: 0x4b7b0b0
+malloc 35 bytes: 0x4b7b110
+malloc 37 bytes: 0x4b7b180
+malloc 6 bytes: 0x4b7b1f0
+malloc 110 bytes: 0x4b7b240
+malloc 11 bytes: 0x4b7b2f0
+malloc 27 bytes: 0x4b7b340
+malloc 74 bytes: 0x4b7b3a0
+malloc 6 bytes: 0x4b7b430
+malloc 6 bytes: 0x4b7b480
+malloc 75 bytes: 0x4b7b4d0
+malloc 11 bytes: 0x4b7b560
+malloc 27 bytes: 0x4b7b5b0
+malloc 75 bytes: 0x4b7b610
+malloc 12 bytes: 0x4b7b6a0
+malloc 26 bytes: 0x4b7b6f0
+malloc 110 bytes: 0x4b7b750
+malloc 11 bytes: 0x4b7b800
+malloc 32 bytes: 0x4b7b850
+malloc 484 bytes: 0x4b7b8b0
+malloc 16 bytes: 0x4b7bae0
+malloc 38 bytes: 0x4b7bb30
+malloc 1 bytes: 0x4b7bba0
+malloc 35 bytes: 0x4b7bbf0
+malloc 1 bytes: 0x4b7bc60
+malloc 38 bytes: 0x4b7bcb0
+malloc 42 bytes: 0x4b7bd20
+malloc 53 bytes: 0x4b7bd90
+malloc 174 bytes: 0x4b7be10
+malloc 2 bytes: 0x4b7bf00
+malloc 20 bytes: 0x4b7bf50
+malloc 9 bytes: 0x4b7bfb0
+malloc 10 bytes: 0x4b7c000
+malloc 9 bytes: 0x4b7c050
+malloc 75 bytes: 0x4b7c0a0
+malloc 10 bytes: 0x4b7c130
+malloc 24 bytes: 0x4b7c180
+free 0x4b7c180
+free 0x4b79e00
+free 0x4b7c130
+free 0x4b79d90
+free 0x4b7c0a0
+free 0x4b79d20
+free 0x4b7c050
+free 0x4b79cb0
+free 0x4b7c000
+free 0x4b79c40
+free 0x4b7bfb0
+free 0x4b79bd0
+free 0x4b7bf50
+free 0x4b79b60
+free 0x4b7bf00
+free 0x4b79af0
+free 0x4b7be10
+free 0x4b79a80
+free 0x4b79a10
+free 0x4b799a0
+free 0x4b79930
+free 0x4b7bd90
+free 0x4b798c0
+free 0x4b7bd20
+free 0x4b79850
+free 0x4b7bcb0
+free 0x4b797e0
+free 0x4b7bc60
+free 0x4b79770
+free 0x4b7bbf0
+free 0x4b79700
+free 0x4b79690
+free 0x4b7bba0
+free 0x4b79620
+free 0x4b7bb30
+free 0x4b795b0
+free 0x4b79540
+free 0x4b7bae0
+free 0x4b794d0
+free 0x4b7b8b0
+free 0x4b79460
+free 0x4b7b850
+free 0x4b793f0
+free 0x4b7b800
+free 0x4b79380
+free 0x4b7b750
+free 0x4b79310
+free 0x4b7b6f0
+free 0x4b792a0
+free 0x4b7b6a0
+free 0x4b79230
+free 0x4b7b610
+free 0x4b791c0
+free 0x4b7b5b0
+free 0x4b79150
+free 0x4b7b560
+free 0x4b790e0
+free 0x4b7b4d0
+free 0x4b79070
+free 0x4b7b480
+free 0x4b79000
+free 0x4b7b430
+free 0x4b78f90
+free 0x4b7b3a0
+free 0x4b78f20
+free 0x4b7b340
+free 0x4b78eb0
+free 0x4b7b2f0
+free 0x4b78e40
+free 0x4b7b240
+free 0x4b78dd0
+free 0x4b78d60
+free 0x4b7b1f0
+free 0x4b78cf0
+free 0x4b78c80
+free 0x4b78c10
+free 0x4b78ba0
+free 0x4b7b180
+free 0x4b78b30
+free 0x4b7b110
+free 0x4b78ac0
+free 0x4b7b0b0
+free 0x4b78a50
+free 0x4b7b060
+free 0x4b789e0
+free 0x4b7afe0
+free 0x4b78970
+free 0x4b7af70
+free 0x4b78900
+free 0x4b7af20
+free 0x4b78890
+free 0x4b7aec0
+free 0x4b78820
+free 0x4b7ae60
+free 0x4b787b0
+free 0x4b78740
+free 0x4b7ae00
+free 0x4b786d0
+free 0x4b7ada0
+free 0x4b78660
+free 0x4b7ad40
+free 0x4b785f0
+free 0x4b78580
+free 0x4b78510
+free 0x4b784a0
+free 0x4b78430
+free 0x4b783c0
+free 0x4b78350
+free 0x4b782e0
+free 0x4b78270
+free 0x4b78200
+free 0x4b78190
+free 0x4b7ace0
+free 0x4b78120
+free 0x4b7ac80
+free 0x4b780b0
+free 0x4b78040
+free 0x4b7ac20
+free 0x4b77fd0
+free 0x4b7abc0
+free 0x4b77f60
+free 0x4b7ab70
+free 0x4b77ef0
+free 0x4b7ab20
+free 0x4b77e80
+free 0x4b7aac0
+free 0x4b77e10
+free 0x4b7aa60
+free 0x4b77da0
+free 0x4b7aa10
+free 0x4b77d30
+free 0x4b7a9b0
+free 0x4b77cc0
+free 0x4b7a960
+free 0x4b77c50
+free 0x4b7a910
+free 0x4b77be0
+free 0x4b7a8b0
+free 0x4b77b70
+free 0x4b7a150
+free 0x4b77b00
+free 0x4b7a0f0
+free 0x4b77a90
+free 0x4b7a0a0
+free 0x4b77a20
+free 0x4b79ff0
+free 0x4b779b0
+free 0x4b79f80
+free 0x4b77940
+free 0x4b79ed0
+free 0x4b778d0
+free 0x4b79e70
+free 0x4b77860
+
+
+valid-0001.json
+calloc 48 bytes: 0x4b7d490
+free 0x4b7d490
+
+
+valid-0002.json
+calloc 48 bytes: 0x4b7e7d0
+calloc 48 bytes: 0x4b7e840
+calloc 48 bytes: 0x4b7e8b0
+calloc 48 bytes: 0x4b7e920
+malloc 24 bytes: 0x4b7e990
+malloc 7 bytes: 0x4b7e9f0
+free 0x4b7e9f0
+free 0x4b7e920
+free 0x4b7e8b0
+free 0x4b7e840
+free 0x4b7e990
+free 0x4b7e7d0
+
+
+valid-0003.json
+calloc 48 bytes: 0x4b7fd10
+calloc 48 bytes: 0x4b7fd80
+calloc 48 bytes: 0x4b7fdf0
+malloc 56 bytes: 0x4b7fe60
+free 0x4b7fdf0
+free 0x4b7fd80
+free 0x4b7fe60
+free 0x4b7fd10
+
+
+valid-0004.json
+calloc 48 bytes: 0x4b81230
+calloc 48 bytes: 0x4b812a0
+calloc 48 bytes: 0x4b81310
+calloc 48 bytes: 0x4b81380
+calloc 48 bytes: 0x4b813f0
+calloc 48 bytes: 0x4b81460
+calloc 48 bytes: 0x4b814d0
+calloc 48 bytes: 0x4b81540
+calloc 48 bytes: 0x4b815b0
+malloc 63 bytes: 0x4b81620
+malloc 3 bytes: 0x4b816a0
+malloc 8 bytes: 0x4b816f0
+malloc 92 bytes: 0x4b81740
+malloc 8 bytes: 0x4b817e0
+malloc 27 bytes: 0x4b81830
+malloc 37 bytes: 0x4b81890
+malloc 37 bytes: 0x4b81900
+free 0x4b81900
+free 0x4b815b0
+free 0x4b81540
+free 0x4b81890
+free 0x4b814d0
+free 0x4b81830
+free 0x4b81460
+free 0x4b817e0
+free 0x4b813f0
+free 0x4b81740
+free 0x4b81380
+free 0x4b816f0
+free 0x4b81310
+free 0x4b816a0
+free 0x4b812a0
+free 0x4b81620
+free 0x4b81230
+
+
+valid-0005.json
+calloc 48 bytes: 0x4b82cc0
+calloc 48 bytes: 0x4b82d30
+calloc 48 bytes: 0x4b82da0
+calloc 48 bytes: 0x4b82e10
+calloc 48 bytes: 0x4b82e80
+calloc 48 bytes: 0x4b82ef0
+calloc 48 bytes: 0x4b82f60
+calloc 48 bytes: 0x4b82fd0
+calloc 48 bytes: 0x4b83040
+calloc 48 bytes: 0x4b830b0
+calloc 48 bytes: 0x4b83120
+calloc 48 bytes: 0x4b83190
+calloc 48 bytes: 0x4b83200
+malloc 96 bytes: 0x4b83270
+free 0x4b83200
+free 0x4b83190
+free 0x4b83120
+free 0x4b830b0
+free 0x4b83040
+free 0x4b82fd0
+free 0x4b82f60
+free 0x4b82ef0
+free 0x4b82e80
+free 0x4b82e10
+free 0x4b82da0
+free 0x4b82d30
+free 0x4b83270
+free 0x4b82cc0
+
+
+valid-0006.json
+calloc 48 bytes: 0x4b84620
+calloc 48 bytes: 0x4b84690
+malloc 30 bytes: 0x4b84700
+malloc 34 bytes: 0x4b84760
+free 0x4b84760
+free 0x4b84690
+free 0x4b84700
+free 0x4b84620
+
+
+valid-0007.json
+calloc 48 bytes: 0x4b85a80
+malloc 4 bytes: 0x4b85af0
+free 0x4b85af0
+free 0x4b85a80
+
+
+valid-0008.json
+calloc 48 bytes: 0x4b86e30
+calloc 48 bytes: 0x4b86ea0
+calloc 48 bytes: 0x4b86f10
+calloc 48 bytes: 0x4b86f80
+calloc 48 bytes: 0x4b86ff0
+calloc 48 bytes: 0x4b87060
+calloc 48 bytes: 0x4b870d0
+malloc 48 bytes: 0x4b87140
+free 0x4b870d0
+free 0x4b87060
+free 0x4b86ff0
+free 0x4b86f80
+free 0x4b86f10
+free 0x4b86ea0
+free 0x4b87140
+free 0x4b86e30
+
+
+valid-0009.json
+calloc 48 bytes: 0x4b88460
+free 0x4b88460
+
+
+valid-0010.json
+calloc 48 bytes: 0x4b89780
+free 0x4b89780
+
+
+valid-0011.json
+calloc 48 bytes: 0x4b8aaa0
+free 0x4b8aaa0
+
+
+valid-0012.json
+calloc 48 bytes: 0x4b8bf40
+calloc 48 bytes: 0x4b8bfb0
+calloc 48 bytes: 0x4b8c020
+calloc 48 bytes: 0x4b8c090
+malloc 128 bytes: 0x4b8c100
+malloc 5 bytes: 0x4b8c1c0
+malloc 82 bytes: 0x4b8c210
+malloc 46 bytes: 0x4b8c2b0
+free 0x4b8c2b0
+free 0x4b8c090
+free 0x4b8c210
+free 0x4b8c020
+free 0x4b8c1c0
+free 0x4b8bfb0
+free 0x4b8c100
+free 0x4b8bf40
+
+
+valid-0013.json
+calloc 48 bytes: 0x4b8d620
+calloc 48 bytes: 0x4b8d690
+calloc 48 bytes: 0x4b8d700
+calloc 48 bytes: 0x4b8d770
+malloc 92 bytes: 0x4b8d7e0
+malloc 10 bytes: 0x4b8d880
+malloc 17 bytes: 0x4b8d8d0
+malloc 10 bytes: 0x4b8d930
+free 0x4b8d930
+free 0x4b8d770
+free 0x4b8d8d0
+free 0x4b8d700
+free 0x4b8d880
+free 0x4b8d690
+free 0x4b8d7e0
+free 0x4b8d620
+
+
+valid-0014.json
+
+
+invalid-0000.json
+
+
+invalid-0001.json
+calloc 48 bytes: 0x4b90100
+free 0x4b90100
+
+
+invalid-0002.json
+calloc 48 bytes: 0x4b91420
+free 0x4b91420
+
+
+invalid-0003.json
+calloc 48 bytes: 0x4b934c0
+calloc 48 bytes: 0x4b93530
+calloc 48 bytes: 0x4b935a0
+calloc 48 bytes: 0x4b93610
+calloc 48 bytes: 0x4b93680
+calloc 48 bytes: 0x4b936f0
+calloc 48 bytes: 0x4b93760
+calloc 48 bytes: 0x4b937d0
+calloc 48 bytes: 0x4b93840
+calloc 48 bytes: 0x4b938b0
+calloc 48 bytes: 0x4b93920
+calloc 48 bytes: 0x4b93990
+calloc 48 bytes: 0x4b93a00
+calloc 48 bytes: 0x4b93a70
+calloc 48 bytes: 0x4b93ae0
+calloc 48 bytes: 0x4b93b50
+calloc 48 bytes: 0x4b93bc0
+calloc 48 bytes: 0x4b93c30
+calloc 48 bytes: 0x4b93ca0
+calloc 48 bytes: 0x4b93d10
+calloc 48 bytes: 0x4b93d80
+calloc 48 bytes: 0x4b93df0
+calloc 48 bytes: 0x4b93e60
+calloc 48 bytes: 0x4b93ed0
+calloc 48 bytes: 0x4b93f40
+calloc 48 bytes: 0x4b93fb0
+calloc 48 bytes: 0x4b94020
+calloc 48 bytes: 0x4b94090
+calloc 48 bytes: 0x4b94100
+calloc 48 bytes: 0x4b94170
+calloc 48 bytes: 0x4b941e0
+calloc 48 bytes: 0x4b94250
+calloc 48 bytes: 0x4b942c0
+calloc 48 bytes: 0x4b94330
+free 0x4b934c0
+free 0x4b93530
+free 0x4b935a0
+free 0x4b93610
+free 0x4b93680
+free 0x4b936f0
+free 0x4b93760
+free 0x4b937d0
+free 0x4b93840
+free 0x4b938b0
+free 0x4b93920
+free 0x4b93990
+free 0x4b93a00
+free 0x4b93a70
+free 0x4b93ae0
+free 0x4b93b50
+free 0x4b93bc0
+free 0x4b93c30
+free 0x4b93ca0
+free 0x4b93d10
+free 0x4b93d80
+free 0x4b93df0
+free 0x4b93e60
+free 0x4b93ed0
+free 0x4b93f40
+free 0x4b93fb0
+free 0x4b94020
+free 0x4b94090
+free 0x4b94100
+free 0x4b94170
+free 0x4b941e0
+free 0x4b94250
+free 0x4b942c0
+free 0x4b94330
+
+
+invalid-0004.json
+calloc 48 bytes: 0x4b95650
+calloc 48 bytes: 0x4b956c0
+free 0x4b95650
+free 0x4b956c0
+
+
+invalid-0005.json
+calloc 48 bytes: 0x4b969e0
+calloc 48 bytes: 0x4b96a50
+free 0x4b969e0
+free 0x4b96a50
+
+
+invalid-0006.json
+calloc 48 bytes: 0x4b97d70
+calloc 48 bytes: 0x4b97de0
+free 0x4b97d70
+free 0x4b97de0
+
+
+invalid-0007.json
+calloc 48 bytes: 0x4b99100
+calloc 48 bytes: 0x4b99170
+free 0x4b99100
+free 0x4b99170
+
+
+invalid-0008.json
+calloc 48 bytes: 0x4b9a490
+calloc 48 bytes: 0x4b9a500
+free 0x4b9a490
+free 0x4b9a500
+
+
+invalid-0009.json
+calloc 48 bytes: 0x4b9b820
+calloc 48 bytes: 0x4b9b890
+free 0x4b9b820
+free 0x4b9b890
+
+
+invalid-0010.json
+
+
+invalid-0011.json
+
+
+ext-valid-0000.json
+calloc 48 bytes: 0x4b9e090
+free 0x4b9e090
+
+
+ext-valid-0001.json
+calloc 48 bytes: 0x4b9f420
+calloc 48 bytes: 0x4b9f490
+calloc 48 bytes: 0x4b9f500
+malloc 64 bytes: 0x4b9f570
+malloc 6 bytes: 0x4b9f5f0
+free 0x4b9f500
+free 0x4b9f5f0
+free 0x4b9f490
+free 0x4b9f570
+free 0x4b9f420
+
+
+ext-valid-0002.json
+calloc 48 bytes: 0x4ba0910
+calloc 48 bytes: 0x4ba0980
+calloc 48 bytes: 0x4ba09f0
+calloc 48 bytes: 0x4ba0a60
+calloc 48 bytes: 0x4ba0ad0
+malloc 32 bytes: 0x4ba0b40
+free 0x4ba0ad0
+free 0x4ba0a60
+free 0x4ba09f0
+free 0x4ba0980
+free 0x4ba0b40
+free 0x4ba0910
+
+
+ext-valid-0003.json
+calloc 48 bytes: 0x4ba1e70
+free 0x4ba1e70
+
+
+ext-valid-0004.json
+
+
+ext-invalid-0000.json
+
+
+ext-invalid-0001.json
+calloc 48 bytes: 0x4ba46a0
+free 0x4ba46a0
+
+
+ext-invalid-0002.json
+calloc 48 bytes: 0x4ba59e0
+calloc 48 bytes: 0x4ba5a50
+calloc 48 bytes: 0x4ba5ac0
+free 0x4ba59e0
+free 0x4ba5a50
+free 0x4ba5ac0
+
+
+ext-invalid-0003.json
