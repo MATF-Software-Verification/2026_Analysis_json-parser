@@ -112,9 +112,9 @@ Pregled implementacije pokazuje da se `cur_col` postavlja na nulu nakon novog re
 ### Reprodukcioni izlaz
 
 ```text
-ODSTUPANJE unit_tests/test_json_parser.c:337: value == 0
-ODSTUPANJE unit_tests/test_json_parser.c:343: value == 0
-ODSTUPANJE unit_tests/test_json_parser.c:351: member && member->col > 0
+ODSTUPANJE unit_tests/test_json_parser.c:352: value == 0
+ODSTUPANJE unit_tests/test_json_parser.c:358: value == 0
+ODSTUPANJE unit_tests/test_json_parser.c:366: member && member->col > 0
 REPRODUKOVANO: zavrsni-zarez-objekat
 REPRODUKOVANO: zavrsni-zarez-niz
 REPRODUKOVANO: kolona-uvek-nula

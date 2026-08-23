@@ -19,11 +19,13 @@ static int known_issues_mode = 0;
    } \
 } while (0)
 
+/* Parsira prosledjeni tekst koristeci jednostavni javni API biblioteke. */
 static json_value *parse_text(const char *text)
 {
    return json_parse(text, strlen(text));
 }
 
+/* Pronalazi vrednost clana JSON objekta na osnovu imena kljuca. */
 static json_value *object_member(json_value *object, const char *name)
 {
    unsigned int i;
@@ -46,6 +48,7 @@ static json_value *object_member(json_value *object, const char *name)
    return 0;
 }
 
+/* Proverava parsiranje prostih JSON vrednosti na korenu dokumenta. */
 static void test_root_primitives(void)
 {
    json_value *value;
@@ -75,6 +78,7 @@ static void test_root_primitives(void)
    json_value_free(value);
 }
 
+/* Proverava strukturu i sadrzaj ugnjezdenog DOM stabla. */
 static void test_nested_dom(void)
 {
    const char *text =
@@ -127,6 +131,7 @@ static void test_nested_dom(void)
    json_value_free(root);
 }
 
+/* Proverava escape sekvence, nul-bajt i Unicode obradu stringova. */
 static void test_strings_and_unicode(void)
 {
    json_value *value;
@@ -157,6 +162,7 @@ static void test_strings_and_unicode(void)
    json_value_free(value);
 }
 
+/* Proverava odbijanje nevalidnih ulaza i popunjavanje opisa greske. */
 static void test_invalid_inputs_and_errors(void)
 {
    static const char *invalid[] = {
@@ -182,6 +188,7 @@ static void test_invalid_inputs_and_errors(void)
    }
 }
 
+/* Proverava da parser postuje eksplicitno prosledjenu duzinu ulaza. */
 static void test_explicit_length_boundary(void)
 {
    const char buffer[] = "true trailing";
@@ -195,6 +202,7 @@ static void test_explicit_length_boundary(void)
    CHECK(value == 0);
 }
 
+/* Proverava razliku izmedju strogog rezima i rezima sa komentarima. */
 static void test_comment_modes(void)
 {
    const char *text = "/* komentar */ {\"a\": 1} // kraj";
@@ -215,6 +223,7 @@ static void test_comment_modes(void)
    json_value_free(value);
 }
 
+/* Proverava granice celih brojeva i prelazak na double reprezentaciju. */
 static void test_number_boundaries(void)
 {
    char max_text[64];
@@ -241,6 +250,7 @@ typedef struct
    unsigned long frees;
 } allocation_stats;
 
+/* Alocira memoriju i broji uspesne alokacije testnog alokatora. */
 static void *counting_alloc(size_t size, int zero, void *user_data)
 {
    allocation_stats *stats = (allocation_stats *)user_data;
@@ -252,6 +262,7 @@ static void *counting_alloc(size_t size, int zero, void *user_data)
    return result;
 }
 
+/* Oslobadja memoriju i broji oslobadjanja testnog alokatora. */
 static void counting_free(void *ptr, void *user_data)
 {
    allocation_stats *stats = (allocation_stats *)user_data;
@@ -262,6 +273,7 @@ static void counting_free(void *ptr, void *user_data)
    free(ptr);
 }
 
+/* Proverava balans alokacija i oslobadjanja na obe putanje parsiranja. */
 static void test_custom_allocator_and_cleanup(void)
 {
    const char *valid = "{\"a\":[1,2,3],\"b\":\"text\"}";
@@ -289,6 +301,7 @@ static void test_custom_allocator_and_cleanup(void)
    CHECK(stats.allocations == stats.frees);
 }
 
+/* Proverava ponasanje parsera sa premalim i dovoljnim limitom memorije. */
 static void test_memory_limit(void)
 {
    const char *text = "{\"name\":\"Milos\",\"values\":[1,2,3]}";
@@ -309,6 +322,7 @@ static void test_memory_limit(void)
    json_value_free(value);
 }
 
+/* Proverava pracenje reda izvornog dokumenta uz JSON_TRACK_SOURCE. */
 static void test_source_tracking(void)
 {
    const char *text = "{\n  \"value\": 42\n}";
@@ -325,6 +339,7 @@ static void test_source_tracking(void)
    json_value_free(root);
 }
 
+/* Reprodukuje dokumentovana odstupanja od ocekivanog ponasanja. */
 static void test_known_issues(void)
 {
    const char *source_text = "{\n  \"value\": 42\n}";
@@ -355,6 +370,7 @@ static void test_known_issues(void)
    json_value_free(value);
 }
 
+/* Bira rezim rada, pokrece testove i vraca zbirni status programa. */
 int main(int argc, char **argv)
 {
    if (argc == 2 && strcmp(argv[1], "--poznati-nalazi") == 0)
