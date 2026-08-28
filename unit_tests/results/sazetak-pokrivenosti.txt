@@ -1,11 +1,15 @@
 Verzije alata
 ==============
-gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
-lcov: LCOV version 2.0-1
+Apple clang version 21.0.0 (clang-2100.1.1.101)
+lcov: LCOV version 2.5-0
 
 Pokrivenost json.c
 ==================
+Reading tracefile /Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/unit_tests/build/coverage-json-parser.info.
 Summary coverage rate:
-  lines......: 80.9% (407 of 503 lines)
-  functions..: 100.0% (10 of 10 functions)
-  branches...: 67.9% (250 of 368 branches)
+  source files: 1
+  lines.......: 80.6% (395 of 490 lines)
+  functions...: 100.0% (10 of 10 functions)
+  branches....: 67.9% (250 of 368 branches)
+Message summary:
+  no messages were reported

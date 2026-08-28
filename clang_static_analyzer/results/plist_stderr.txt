@@ -1,9 +1,6 @@
 /Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/json-parser/json.c:683:37: warning: Value stored to 'b' is never read [deadcode.DeadStores]
   683 |                                     b = 0;
       |                                     ^   ~
-/Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/json-parser/json.c:683:37: note: Value stored to 'b' is never read
-  683 |                                     b = 0;
-      |                                     ^   ~
 /Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/json-parser/json.c:975:10: warning: Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as 'strlcpy'. CWE-119 [security.insecureAPI.strcpy]
   975 |          strcpy (error_buf, error);
       |          ^~~~~~~~~~~~~~~~~~~~~~~~~
@@ -13,25 +10,7 @@
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_string.h:172:3: note: expanded from macro '__strcpy_chk_func'
   172 |                 __builtin___strcpy_chk (dest, __VA_ARGS__, __darwin_obsz (dest))
       |                 ^~~~~~~~~~~~~~~~~~~~~~
-/Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/json-parser/json.c:975:10: note: Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as 'strlcpy'. CWE-119
-  975 |          strcpy (error_buf, error);
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_string.h:249:21: note: expanded from macro 'strcpy'
-  249 | #define strcpy(...) __strcpy_chk_func (__VA_ARGS__)
-      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_string.h:172:3: note: expanded from macro '__strcpy_chk_func'
-  172 |                 __builtin___strcpy_chk (dest, __VA_ARGS__, __darwin_obsz (dest))
-      |                 ^~~~~~~~~~~~~~~~~~~~~~
 /Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/json-parser/json.c:977:10: warning: Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as 'strlcpy'. CWE-119 [security.insecureAPI.strcpy]
-  977 |          strcpy (error_buf, "Unknown error");
-      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_string.h:249:21: note: expanded from macro 'strcpy'
-  249 | #define strcpy(...) __strcpy_chk_func (__VA_ARGS__)
-      |                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_string.h:172:3: note: expanded from macro '__strcpy_chk_func'
-  172 |                 __builtin___strcpy_chk (dest, __VA_ARGS__, __darwin_obsz (dest))
-      |                 ^~~~~~~~~~~~~~~~~~~~~~
-/Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/json-parser/json.c:977:10: note: Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as 'strlcpy'. CWE-119
   977 |          strcpy (error_buf, "Unknown error");
       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/secure/_string.h:249:21: note: expanded from macro 'strcpy'

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+ <key>clang_version</key>
+<string>Apple clang version 21.0.0 (clang-2100.1.1.101)</string>
+ <key>diagnostics</key>
+ <array>
+  <dict>
+   <key>path</key>
+   <array>
+    <dict>
+     <key>kind</key><string>event</string>
+     <key>location</key>
+     <dict>
+      <key>line</key><integer>683</integer>
+      <key>col</key><integer>37</integer>
+      <key>file</key><integer>0</integer>
+     </dict>
+     <key>ranges</key>
+     <array>
+       <array>
+        <dict>
+         <key>line</key><integer>683</integer>
+         <key>col</key><integer>41</integer>
+         <key>file</key><integer>0</integer>
+        </dict>
+        <dict>
+         <key>line</key><integer>683</integer>
+         <key>col</key><integer>41</integer>
+         <key>file</key><integer>0</integer>
+        </dict>
+       </array>
+     </array>
+     <key>depth</key><integer>0</integer>
+     <key>extended_message</key>
+     <string>Value stored to &apos;b&apos; is never read</string>
+     <key>message</key>
+     <string>Value stored to &apos;b&apos; is never read</string>
+    </dict>
+   </array>
+   <key>description</key><string>Value stored to &apos;b&apos; is never read</string>
+   <key>category</key><string>Unused code</string>
+   <key>type</key><string>Dead assignment</string>
+   <key>check_name</key><string>deadcode.DeadStores</string>
+   <!-- This hash is experimental and going to change! -->
+   <key>issue_hash_content_of_line_in_context</key><string>d2edbaa8ea29fef378b62d66cd556b9e</string>
+  <key>issue_context_kind</key><string>function</string>
+  <key>issue_context</key><string>json_parse_ex</string>
+  <key>issue_hash_function_offset</key><string>424</string>
+  <key>location</key>
+  <dict>
+   <key>line</key><integer>683</integer>
+   <key>col</key><integer>37</integer>
+   <key>file</key><integer>0</integer>
+  </dict>
+  <key>ExecutedLines</key>
+  <dict>
+   <key>0</key>
+   <array>
+    <integer>683</integer>
+   </array>
+  </dict>
+  </dict>
+  <dict>
+   <key>path</key>
+   <array>
+    <dict>
+     <key>kind</key><string>event</string>
+     <key>location</key>
+     <dict>
+      <key>line</key><integer>975</integer>
+      <key>col</key><integer>10</integer>
+      <key>file</key><integer>0</integer>
+     </dict>
+     <key>ranges</key>
+     <array>
+       <array>
+        <dict>
+         <key>line</key><integer>975</integer>
+         <key>col</key><integer>10</integer>
+         <key>file</key><integer>0</integer>
+        </dict>
+        <dict>
+         <key>line</key><integer>975</integer>
+         <key>col</key><integer>34</integer>
+         <key>file</key><integer>0</integer>
+        </dict>
+       </array>
+     </array>
+     <key>depth</key><integer>0</integer>
+     <key>extended_message</key>
+     <string>Call to function &apos;strcpy&apos; is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as &apos;strlcpy&apos;. CWE-119</string>
+     <key>message</key>
+     <string>Call to function &apos;strcpy&apos; is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as &apos;strlcpy&apos;. CWE-119</string>
+    </dict>
+   </array>
+   <key>description</key><string>Call to function &apos;strcpy&apos; is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as &apos;strlcpy&apos;. CWE-119</string>
+   <key>category</key><string>Security</string>
+   <key>type</key><string>Potential insecure memory buffer bounds restriction in call &apos;strcpy&apos;</string>
+   <key>check_name</key><string>security.insecureAPI.strcpy</string>
+   <!-- This hash is experimental and going to change! -->
+   <key>issue_hash_content_of_line_in_context</key><string>077b092bfca5711e51c0dcfb19487a88</string>
+  <key>issue_context_kind</key><string>function</string>
+  <key>issue_context</key><string>json_parse_ex</string>
+  <key>issue_hash_function_offset</key><string>716</string>
+  <key>location</key>
+  <dict>
+   <key>line</key><integer>975</integer>
+   <key>col</key><integer>10</integer>
+   <key>file</key><integer>0</integer>
+  </dict>
+  <key>ExecutedLines</key>
+  <dict>
+   <key>0</key>
+   <array>
+    <integer>975</integer>
+   </array>
+  </dict>
+  </dict>
+  <dict>
+   <key>path</key>
+   <array>
+    <dict>
+     <key>kind</key><string>event</string>
+     <key>location</key>
+     <dict>
+      <key>line</key><integer>977</integer>
+      <key>col</key><integer>10</integer>
+      <key>file</key><integer>0</integer>
+     </dict>
+     <key>ranges</key>
+     <array>
+       <array>
+        <dict>
+         <key>line</key><integer>977</integer>
+         <key>col</key><integer>10</integer>
+         <key>file</key><integer>0</integer>
+        </dict>
+        <dict>
+         <key>line</key><integer>977</integer>
+         <key>col</key><integer>44</integer>
+         <key>file</key><integer>0</integer>
+        </dict>
+       </array>
+     </array>
+     <key>depth</key><integer>0</integer>
+     <key>extended_message</key>
+     <string>Call to function &apos;strcpy&apos; is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as &apos;strlcpy&apos;. CWE-119</string>
+     <key>message</key>
+     <string>Call to function &apos;strcpy&apos; is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as &apos;strlcpy&apos;. CWE-119</string>
+    </dict>
+   </array>
+   <key>description</key><string>Call to function &apos;strcpy&apos; is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as &apos;strlcpy&apos;. CWE-119</string>
+   <key>category</key><string>Security</string>
+   <key>type</key><string>Potential insecure memory buffer bounds restriction in call &apos;strcpy&apos;</string>
+   <key>check_name</key><string>security.insecureAPI.strcpy</string>
+   <!-- This hash is experimental and going to change! -->
+   <key>issue_hash_content_of_line_in_context</key><string>a806bd584d5b6fd5c50e2360bf4ad6e2</string>
+  <key>issue_context_kind</key><string>function</string>
+  <key>issue_context</key><string>json_parse_ex</string>
+  <key>issue_hash_function_offset</key><string>718</string>
+  <key>location</key>
+  <dict>
+   <key>line</key><integer>977</integer>
+   <key>col</key><integer>10</integer>
+   <key>file</key><integer>0</integer>
+  </dict>
+  <key>ExecutedLines</key>
+  <dict>
+   <key>0</key>
+   <array>
+    <integer>977</integer>
+   </array>
+  </dict>
+  </dict>
+ </array>
+ <key>files</key>
+ <array>
+  <string>/Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/json-parser/json.c</string>
+ </array>
+</dict>
+</plist>

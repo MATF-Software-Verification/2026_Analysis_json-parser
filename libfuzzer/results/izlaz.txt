@@ -1,31 +1,64 @@
 INFO: Running with entropic power schedule (0xFF, 100).
-INFO: Seed: 2242044167
-INFO: Loaded 1 modules   (1073 inline 8-bit counters): 1073 [0x5fe72c6bb258, 0x5fe72c6bb689), 
-INFO: Loaded 1 PC tables (1073 PCs): 1073 [0x5fe72c6bb690,0x5fe72c6bf9a0), 
-INFO:        4 files found in /home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/corpus
+INFO: Seed: 970267567
+INFO: Loaded 1 modules   (868 inline 8-bit counters): 868 [0x1022fa770, 0x1022faad4), 
+INFO: Loaded 1 PC tables (868 PCs): 868 [0x1022faad8,0x1022fe118), 
+INFO:        4 files found in /Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/libfuzzer/build/corpus
 INFO: -max_len is not provided; libFuzzer will not generate inputs larger than 4096 bytes
-INFO: seed corpus: files: 4 min: 23b max: 48b total: 124b rss: 32Mb
+INFO: seed corpus: files: 4 min: 23b max: 48b total: 124b rss: 34Mb
 json-parser/json.c:437:34: runtime error: applying non-zero offset 2 to null pointer
-    #0 0x5fe72c66ae31 in json_parse_ex /home/gamzatore/Workspace/2026_Analysis_json-parser/json-parser/json.c:437:34
-    #1 0x5fe72c670285 in LLVMFuzzerTestOneInput /home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/fuzz_json_parser.c:16:12
-    #2 0x5fe72c572cc4 in fuzzer::Fuzzer::ExecuteCallback(unsigned char const*, unsigned long) (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x57cc4) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
-    #3 0x5fe72c5723b9 in fuzzer::Fuzzer::RunOne(unsigned char const*, unsigned long, bool, fuzzer::InputInfo*, bool, bool*) (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x573b9) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
-    #4 0x5fe72c573fd6 in fuzzer::Fuzzer::ReadAndExecuteSeedCorpora(std::vector<fuzzer::SizedFile, std::allocator<fuzzer::SizedFile>>&) (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x58fd6) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
-    #5 0x5fe72c5744e7 in fuzzer::Fuzzer::Loop(std::vector<fuzzer::SizedFile, std::allocator<fuzzer::SizedFile>>&) (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x594e7) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
-    #6 0x5fe72c5619df in fuzzer::FuzzerDriver(int*, char***, int (*)(unsigned char const*, unsigned long)) (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x469df) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
-    #7 0x5fe72c58c066 in main (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x71066) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
-    #8 0x7be2aec2a1c9 in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:58:16
-    #9 0x7be2aec2a28a in __libc_start_main csu/../csu/libc-start.c:360:3
-    #10 0x5fe72c5569c4 in _start (/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/fuzz_json_parser+0x3b9c4) (BuildId: 506e4050935d0468ce3ace0323ee1fb19d36aa5d)
+    #0 0x0001022ae494 in json_parse_ex json.c:437
+    #1 0x0001022b3414 in LLVMFuzzerTestOneInput fuzz_json_parser.c:46
+    #2 0x0001022cd80c in fuzzer::Fuzzer::ExecuteCallback(unsigned char const*, unsigned long) FuzzerLoop.cpp:619
+    #3 0x0001022ccec0 in fuzzer::Fuzzer::RunOne(unsigned char const*, unsigned long, bool, fuzzer::InputInfo*, bool, bool*) FuzzerLoop.cpp:516
+    #4 0x0001022cf04c in fuzzer::Fuzzer::ReadAndExecuteSeedCorpora(std::__1::vector<fuzzer::SizedFile, std::__1::allocator<fuzzer::SizedFile>>&) FuzzerLoop.cpp:834
+    #5 0x0001022cf46c in fuzzer::Fuzzer::Loop(std::__1::vector<fuzzer::SizedFile, std::__1::allocator<fuzzer::SizedFile>>&) FuzzerLoop.cpp:872
+    #6 0x0001022bdf98 in fuzzer::FuzzerDriver(int*, char***, int (*)(unsigned char const*, unsigned long)) FuzzerDriver.cpp:923
+    #7 0x0001022ec898 in main FuzzerMain.cpp:20
+    #8 0x00018968c4e0 in start+0x1b4c (dyld:arm64e+0x204e0)
 
 SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior json-parser/json.c:437:34 
 MS: 0 ; base unit: 0000000000000000000000000000000000000000
 0x2f,0x2a,0x20,0x6b,0x6f,0x6d,0x65,0x6e,0x74,0x61,0x72,0x20,0x2a,0x2f,0x20,0x7b,0x22,0x61,0x22,0x3a,0x31,0x7d,0xa,
 /* komentar */ {\"a\":1}\012
-artifact_prefix='/home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/artifacts/'; Test unit written to /home/gamzatore/Workspace/2026_Analysis_json-parser/libfuzzer/build/artifacts/crash-b7b38631dc8f544aa1bd38a6582cceec2785e20c
+artifact_prefix='/Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/libfuzzer/build/artifacts/'; Test unit written to /Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/libfuzzer/build/artifacts/crash-b7b38631dc8f544aa1bd38a6582cceec2785e20c
 Base64: Lyoga29tZW50YXIgKi8geyJhIjoxfQo=
 stat::number_of_executed_units: 2
 stat::average_exec_per_sec:     0
 stat::new_units_added:          0
 stat::slowest_unit_time_sec:    0
-stat::peak_rss_mb:              32
+stat::peak_rss_mb:              36
+==76175== ERROR: libFuzzer: deadly signal
+    #0 0x000102abd3a8 in __sanitizer_print_stack_trace+0x28 (libclang_rt.asan_osx_dynamic.dylib:arm64+0x613a8)
+    #1 0x0001022ebbdc in fuzzer::PrintStackTrace() FuzzerUtil.cpp:210
+    #2 0x0001022cbe88 in fuzzer::Fuzzer::CrashCallback() FuzzerLoop.cpp:231
+    #3 0x000189a61740 in _sigtramp+0x34 (libsystem_platform.dylib:arm64e+0x3740)
+    #4 0x000189a578d4 in pthread_kill+0x124 (libsystem_pthread.dylib:arm64e+0x68d4)
+    #5 0x00018995d974 in abort+0x90 (libsystem_c.dylib:arm64e+0x78974)
+    #6 0x000102ad8800 in __sanitizer::Abort()+0x4c (libclang_rt.asan_osx_dynamic.dylib:arm64+0x7c800)
+    #7 0x000102ad7d3c in __sanitizer::Die()+0x60 (libclang_rt.asan_osx_dynamic.dylib:arm64+0x7bd3c)
+    #8 0x000102aee49c in __ubsan::ScopedReport::~ScopedReport()+0x19c (libclang_rt.asan_osx_dynamic.dylib:arm64+0x9249c)
+    #9 0x000102af15e0 in handlePointerOverflowImpl(__ubsan::PointerOverflowData*, unsigned long, unsigned long, __ubsan::ReportOptions)+0x270 (libclang_rt.asan_osx_dynamic.dylib:arm64+0x955e0)
+    #10 0x000102af1360 in __ubsan_handle_pointer_overflow+0x24 (libclang_rt.asan_osx_dynamic.dylib:arm64+0x95360)
+    #11 0x0001022ae494 in json_parse_ex json.c:437
+    #12 0x0001022b3414 in LLVMFuzzerTestOneInput fuzz_json_parser.c:46
+    #13 0x0001022cd80c in fuzzer::Fuzzer::ExecuteCallback(unsigned char const*, unsigned long) FuzzerLoop.cpp:619
+    #14 0x0001022ccec0 in fuzzer::Fuzzer::RunOne(unsigned char const*, unsigned long, bool, fuzzer::InputInfo*, bool, bool*) FuzzerLoop.cpp:516
+    #15 0x0001022cf04c in fuzzer::Fuzzer::ReadAndExecuteSeedCorpora(std::__1::vector<fuzzer::SizedFile, std::__1::allocator<fuzzer::SizedFile>>&) FuzzerLoop.cpp:834
+    #16 0x0001022cf46c in fuzzer::Fuzzer::Loop(std::__1::vector<fuzzer::SizedFile, std::__1::allocator<fuzzer::SizedFile>>&) FuzzerLoop.cpp:872
+    #17 0x0001022bdf98 in fuzzer::FuzzerDriver(int*, char***, int (*)(unsigned char const*, unsigned long)) FuzzerDriver.cpp:923
+    #18 0x0001022ec898 in main FuzzerMain.cpp:20
+    #19 0x00018968c4e0 in start+0x1b4c (dyld:arm64e+0x204e0)
+
+NOTE: libFuzzer has rudimentary signal handlers.
+      Combine libFuzzer with AddressSanitizer or similar for better crash reports.
+SUMMARY: libFuzzer: deadly signal
+MS: 0 ; base unit: 0000000000000000000000000000000000000000
+0x2f,0x2a,0x20,0x6b,0x6f,0x6d,0x65,0x6e,0x74,0x61,0x72,0x20,0x2a,0x2f,0x20,0x7b,0x22,0x61,0x22,0x3a,0x31,0x7d,0xa,
+/* komentar */ {\"a\":1}\012
+artifact_prefix='/Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/libfuzzer/build/artifacts/'; Test unit written to /Users/miloskutlesic-personal/Desktop/Fax/2026_Analysis_json-parser/libfuzzer/build/artifacts/crash-b7b38631dc8f544aa1bd38a6582cceec2785e20c
+Base64: Lyoga29tZW50YXIgKi8geyJhIjoxfQo=
+stat::number_of_executed_units: 2
+stat::average_exec_per_sec:     0
+stat::new_units_added:          0
+stat::slowest_unit_time_sec:    0
+stat::peak_rss_mb:              36
