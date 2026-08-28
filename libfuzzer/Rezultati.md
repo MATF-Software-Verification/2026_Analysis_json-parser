@@ -117,6 +117,30 @@ json-parser/json.c:437:34: runtime error: applying non-zero offset 2 to null poi
 
 Program se zaustavlja sa statusom 1 i sačuvan je crash artefakt.
 
+### Lokalna reprodukcija na Apple Silicon macOS-u
+
+Ovaj nalaz je dodatno reprodukovan lokalno na Apple Silicon Mac-u. Sačuvano Linux pokretanje koristilo je Ubuntu Clang 18.1.3, dok je lokalno macOS pokretanje koristilo Homebrew LLVM Clang 23.1.0 (Apple Clang ne isporučuje fuzzer runtime, vidi napomenu o fuzzer runtime biblioteci iznad).
+
+Tok lokalnog pokretanja `FUZZ_SECONDS=30 ./libfuzzer/run_libfuzzer.sh`:
+
+1. build prolazi uz istih 20 upozorenja o deprecated `sprintf`, bez build greške;
+2. libFuzzer startuje sa entropic power schedule i učitava 4 seed fajla;
+3. UBSan već pri obradi seed korpusa (`stat::number_of_executed_units: 2`) prijavljuje:
+   ```text
+   json-parser/json.c:437:34: runtime error: applying non-zero offset 2 to null pointer
+   SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior json-parser/json.c:437:34
+   ```
+4. pošto je `halt_on_error=1`, UBSan abort-uje proces; libFuzzer to beleži kao `deadly signal` i piše crash artefakt;
+5. skripta čuva `results/crash-reprodukcija.bin`, prepoznaje tačan marker poznatog nalaza i završava statusom 0.
+
+Uočljivo je da je crash artefakt dobio isti hash kao pri sačuvanom Linux pokretanju:
+
+```text
+crash-b7b38631dc8f544aa1bd38a6582cceec2785e20c
+```
+
+Ista 24 bajta ulaza, ista lokacija u kodu, isti tip nedefinisanog ponašanja (`__ubsan_handle_pointer_overflow`) na sasvim drugoj platformi i kompajler verziji. Nalaz je time potvrđen kao deterministički i nezavisan od platforme; razlikuju se samo statistika izvršavanja i format stack trace-a.
+
 ### Reprodukcioni ulaz
 
 Sadržaj fajla `results/crash-reprodukcija.bin`:
