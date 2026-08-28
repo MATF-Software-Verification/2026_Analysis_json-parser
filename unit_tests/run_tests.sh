@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Prekida na prvoj gresci (-e), nedeklarisanoj promenljivoj (-u) i gresci
-# bilo koje komande unutar cevovoda (pipefail).
+# -e prekida skriptu kada komanda vrati gresku.
+# -u prijavljuje gresku pri koriscenju nedefinisane promenljive.
+# pipefail prijavljuje neuspeh ako bilo koja komanda u pipeline-u ne uspe.
 set -euo pipefail
 
 # Sve putanje izvodimo iz lokacije ove skripte, pa se skripta moze pokrenuti
