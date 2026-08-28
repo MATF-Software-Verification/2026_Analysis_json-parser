@@ -136,6 +136,32 @@ Zatim se iz korena repozitorijuma pokreće:
 ./unit_tests/run_tests.sh
 ```
 
+#### LCOV dokumentacija i poreklo komandi
+
+Komande za merenje pokrivenosti zasnovane su na zvaničnoj LCOV dokumentaciji:
+
+- [zvanični LCOV repozitorijum i osnovni workflow](https://github.com/linux-test-project/lcov) — prevođenje sa coverage instrumentacijom, pokretanje programa, `lcov --capture` i generisanje HTML izveštaja;
+- [`lcov(1)` dokumentacija](https://manpages.debian.org/unstable/lcov/lcov.1.en.html) — opcije `--capture`, `--directory`, `--output-file`, `--extract`, `--summary`, `--rc` i `--ignore-errors`;
+- [`genhtml(1)` dokumentacija](https://manpages.debian.org/unstable/lcov/genhtml.1.en.html) — opcije `--output-directory`, `--branch-coverage` i `--title`.
+
+Iste stranice su posle instalacije dostupne i lokalno:
+
+```bash
+man lcov
+man genhtml
+```
+
+Naš workflow prati dokumentovani redosled:
+
+1. `gcc --coverage` instrumentiše program i omogućava nastanak `.gcno` i `.gcda` coverage podataka;
+2. testni program se pokreće da bi se zabeležile stvarno izvršene linije i grane;
+3. `lcov --capture --directory ... --output-file ...` prikuplja podatke u sirovi `.info` tracefile;
+4. `lcov --extract ... '*/json-parser/json.c'` zadržava samo pokrivenost originalnog `json.c`, bez našeg testnog koda;
+5. `genhtml ... --output-directory ... --branch-coverage` pravi HTML prikaz pokrivenosti;
+6. `lcov --summary ...` ispisuje zbirne line, function i branch coverage metrike.
+
+Opcije `--ignore-errors mismatch` i `--ignore-errors unused` ne skrivaju testne neuspehe. One se odnose na LCOV obradu coverage podataka: `mismatch` pretvara nepodudarnost između povezanih zapisa u upozorenje umesto fatalne greške, dok `unused` dopušta nastavak ako obrazac za izdvajanje ne odgovara nijednom zapisu. Njihova tačna značenja dokumentovana su u odeljku `--ignore-errors` man stranice `lcov(1)`.
+
 69/69 provera prolazi; pokrivenost `json.c` 80,9% linija, 100,0% funkcija, 67,9% grana. Detalji: [`unit_tests/Rezultati.md`](unit_tests/Rezultati.md).
 
 #### Poznati nalazi iz inicijalne analize
