@@ -5,6 +5,17 @@
 
 #include "json.h"
 
+/*
+ * Dodatni testni program za originalnu biblioteku json-parser.
+ *
+ * Ulaz programa je opciona komandna opcija --poznati-nalazi. Bez nje se
+ * pokrece standardni regresioni skup koji mora da prodje bez greske. Sa njom
+ * se odvojeno reprodukuju tri ranije pronadjena funkcionalna odstupanja.
+ *
+ * Svaka test funkcija sama formira JSON tekst, poziva javni API biblioteke,
+ * proverava dobijeno DOM stablo i oslobadja svu memoriju koju parser vrati.
+ */
+
 /* Zbirni brojevi pojedinacnih CHECK provera i rezim poznatih odstupanja. */
 static unsigned tests_run = 0;
 static unsigned tests_failed = 0;
@@ -25,13 +36,26 @@ static int known_issues_mode = 0;
    } \
 } while (0)
 
-/* Parsira prosledjeni tekst koristeci jednostavni javni API biblioteke. */
+/*
+ * Prima nul-terminiran C string, izracunava njegovu duzinu i prosledjuje ga
+ * funkciji json_parse. Vraca root json_value DOM stabla ili 0 ako parsiranje
+ * nije uspelo. Ovo je samo skraceni poziv javnog API-ja za potrebe testova.
+ */
 static json_value *parse_text(const char *text)
 {
    return json_parse(text, strlen(text));
 }
 
-/* Pronalazi vrednost clana JSON objekta na osnovu imena kljuca. */
+/*
+ * Pretrazuje vec napravljeno DOM stablo; ne parsira JSON.
+ *
+ * object mora biti json_value ciji je type jednak json_object, a name je
+ * nul-terminirano ime trazenog kljuca. Objekat sadrzi niz json_object_entry
+ * elemenata. Svaki entry cuva ime kljuca, njegovu duzinu i pokazivac na
+ * json_value vrednost. Funkcija linearnom pretragom poredi prvo duzinu, zatim
+ * tacne bajtove kljuca, i vraca entry->value kada pronadje podudaranje.
+ * Vraca 0 ako ulaz nije objekat ili trazeni kljuc ne postoji.
+ */
 static json_value *object_member(json_value *object, const char *name)
 {
    unsigned int i;
@@ -54,7 +78,12 @@ static json_value *object_member(json_value *object, const char *name)
    return 0;
 }
 
-/* Proverava parsiranje prostih JSON vrednosti na korenu dokumenta. */
+/*
+ * Proverava proste JSON vrednosti na korenu dokumenta: pozitivan integer,
+ * double sa eksponentom, true, false i JSON null. Za svaki uspesno parsiran
+ * ulaz proverava odgovarajuci json_type i vrednost aktivnog clana unije u,
+ * a zatim oslobadja dobijeni root.
+ */
 static void test_root_primitives(void)
 {
    json_value *value;
@@ -84,7 +113,12 @@ static void test_root_primitives(void)
    json_value_free(value);
 }
 
-/* Proverava strukturu i sadrzaj ugnjezdenog DOM stabla. */
+/*
+ * Parsira objekat sa stringom, boolean vrednoscu, nizom i ugnjezdenim
+ * objektom. Proverava broj clanova, tipove i konkretne vrednosti DOM cvorova,
+ * kao i parent veze: dete objekta pokazuje na objekat, a element niza na niz.
+ * object_member se koristi samo da bi se vrednosti pronasle po kljucu.
+ */
 static void test_nested_dom(void)
 {
    const char *text =
@@ -137,7 +171,13 @@ static void test_nested_dom(void)
    json_value_free(root);
 }
 
-/* Proverava escape sekvence, nul-bajt i Unicode obradu stringova. */
+/*
+ * Proverava tri bitna slucaja obrade stringova:
+ * 1. JSON escape \\n mora postati stvarni newline bajt;
+ * 2. \\u0000 mora ostati deo stringa, pa se sadrzaj proverava preko duzine i
+ *    memcmp umesto funkcija koje staju na prvom nul-bajtu;
+ * 3. \\u20AC mora biti pretvoren u tri UTF-8 bajta znaka evra.
+ */
 static void test_strings_and_unicode(void)
 {
    json_value *value;
@@ -168,7 +208,12 @@ static void test_strings_and_unicode(void)
    json_value_free(value);
 }
 
-/* Proverava odbijanje nevalidnih ulaza i popunjavanje opisa greske. */
+/*
+ * Prosledjuje vise vrsta nevalidnog JSON-a: prazan ulaz, izostavljen zarez,
+ * nedozvoljenu vodecu nulu, nepotpun literal, nezatvoren string i dve root
+ * vrednosti. json_parse_ex za svaki slucaj mora vratiti 0 i upisati opis u
+ * error buffer. json_value_free(0) je dozvoljen i ne radi nista.
+ */
 static void test_invalid_inputs_and_errors(void)
 {
    static const char *invalid[] = {
@@ -194,7 +239,12 @@ static void test_invalid_inputs_and_errors(void)
    }
 }
 
-/* Proverava da parser postuje eksplicitno prosledjenu duzinu ulaza. */
+/*
+ * Isti buffer prvo prosledjuje sa duzinom 4, kada parser vidi samo "true" i
+ * mora uspeti. Zatim prosledjuje celu duzinu "true trailing", koja predstavlja
+ * nevalidan JSON i mora biti odbijena. Time se proverava da je length stvarna
+ * granica ulaza, a ne samo informativan parametar.
+ */
 static void test_explicit_length_boundary(void)
 {
    const char buffer[] = "true trailing";
@@ -208,7 +258,12 @@ static void test_explicit_length_boundary(void)
    CHECK(value == 0);
 }
 
-/* Proverava razliku izmedju strogog rezima i rezima sa komentarima. */
+/*
+ * Isti tekst sa C/C++ komentarima prvo parsira sa podrazumevanim settings,
+ * kada mora biti odbijen. Posle ukljucivanja json_enable_comments mora biti
+ * prihvacen kao objekat i sadrzati clan "a". Time se proverava da ekstenzija
+ * za komentare nije slucajno aktivna u strogom rezimu.
+ */
 static void test_comment_modes(void)
 {
    const char *text = "/* komentar */ {\"a\": 1} // kraj";
@@ -229,7 +284,11 @@ static void test_comment_modes(void)
    json_value_free(value);
 }
 
-/* Proverava granice celih brojeva i prelazak na double reprezentaciju. */
+/*
+ * LONG_MAX mora ostati json_integer sa tacnom vrednoscu. Broj koji je prevelik
+ * za long i broj sa veoma velikim eksponentom moraju preci u json_double.
+ * Test proverava izbor reprezentacije, a ne da je 1e309 konacna vrednost.
+ */
 static void test_number_boundaries(void)
 {
    char max_text[64];
@@ -257,7 +316,11 @@ typedef struct
    unsigned long frees;
 } allocation_stats;
 
-/* Alocira memoriju i broji uspesne alokacije testnog alokatora. */
+/*
+ * Zamena za standardni alokator koju json_parse_ex poziva preko settings.
+ * Parametar zero bira calloc ili malloc, a user_data nosi brojac. Brojimo
+ * samo uspesne alokacije, odnosno pozive koji su vratili pokazivac.
+ */
 static void *counting_alloc(size_t size, int zero, void *user_data)
 {
    allocation_stats *stats = (allocation_stats *)user_data;
@@ -269,7 +332,10 @@ static void *counting_alloc(size_t size, int zero, void *user_data)
    return result;
 }
 
-/* Oslobadja memoriju i broji oslobadjanja testnog alokatora. */
+/*
+ * Par funkcije counting_alloc. Broji nenulte pokazivace pre poziva free, da
+ * bismo nakon parsiranja mogli porediti broj alokacija i oslobadjanja.
+ */
 static void counting_free(void *ptr, void *user_data)
 {
    allocation_stats *stats = (allocation_stats *)user_data;
@@ -280,7 +346,13 @@ static void counting_free(void *ptr, void *user_data)
    free(ptr);
 }
 
-/* Proverava balans alokacija i oslobadjanja na obe putanje parsiranja. */
+/*
+ * U json_settings registruje testni allocator, free funkciju i pokazivac na
+ * statistiku. Na validnom ulazu parser mora vratiti DOM koji zatim oslobadjamo
+ * preko json_value_free_ex. Na nevalidnom ulazu parser mora sam ocistiti sve
+ * delimicno alocirane strukture. U oba slucaja broj allocations i frees mora
+ * biti jednak. Ovo proverava balans, ali samo na konkretnim putanjama testa.
+ */
 static void test_custom_allocator_and_cleanup(void)
 {
    const char *valid = "{\"a\":[1,2,3],\"b\":\"text\"}";
@@ -308,7 +380,11 @@ static void test_custom_allocator_and_cleanup(void)
    CHECK(stats.allocations == stats.frees);
 }
 
-/* Proverava ponasanje parsera sa premalim i dovoljnim limitom memorije. */
+/*
+ * max_memory = 1 namerno nije dovoljan: ocekujemo neuspeh i poruku o gresci
+ * alokacije. Posle potpunog resetovanja settings strukture, limit od 65536
+ * bajtova mora biti dovoljan za isti dokument i parsiranje mora uspeti.
+ */
 static void test_memory_limit(void)
 {
    const char *text = "{\"name\":\"Milos\",\"values\":[1,2,3]}";
@@ -329,7 +405,12 @@ static void test_memory_limit(void)
    json_value_free(value);
 }
 
-/* Proverava pracenje reda izvornog dokumenta uz JSON_TRACK_SOURCE. */
+/*
+ * JSON je rasporedjen u tri reda. Kada je kod preveden sa JSON_TRACK_SOURCE,
+ * root mora biti na prvom, a vrednost clana "value" na drugom redu. #ifdef
+ * osigurava da test jasno padne ako je makro zaboravljen pri prevodjenju.
+ * Kolona se ovde ne zahteva jer je njen kvar izdvojen u poznate nalaze.
+ */
 static void test_source_tracking(void)
 {
    const char *text = "{\n  \"value\": 42\n}";
@@ -346,7 +427,17 @@ static void test_source_tracking(void)
    json_value_free(root);
 }
 
-/* Reprodukuje dokumentovana odstupanja od ocekivanog ponasanja. */
+/*
+ * Reprodukuje tri vec poznata funkcionalna odstupanja:
+ * - objekat sa zavrsnim zarezom mora biti odbijen, ali je prihvacen;
+ * - niz sa zavrsnim zarezom mora biti odbijen, ali je prihvacen;
+ * - col mora opisivati stvarnu kolonu cvora, ali ostaje 0.
+ *
+ * CHECK izrazi predstavljaju ocekivano ispravno ponasanje, zato u trenutnoj
+ * verziji biblioteke namerno padaju. REPRODUKOVANO se ispisuje samo kada je
+ * primeceno tacno dokumentovano ponasanje. Ovaj skup se ne mesa sa standardnim
+ * testovima koji moraju proci bez neuspeha.
+ */
 static void test_known_issues(void)
 {
    const char *source_text = "{\n  \"value\": 42\n}";
@@ -377,7 +468,12 @@ static void test_known_issues(void)
    json_value_free(value);
 }
 
-/* Bira rezim rada, pokrece testove i vraca zbirni status programa. */
+/*
+ * Ulaz programa su argc/argv argumenti komandne linije. Sa tacno jednim
+ * argumentom --poznati-nalazi pokrece se samo reprodukcioni skup. Bez tog
+ * argumenta redom se pokrece deset standardnih grupa. Na kraju se ispisuju
+ * brojevi provera i vraca exit status 0 samo ako nijedan CHECK nije pao.
+ */
 int main(int argc, char **argv)
 {
    /* Poseban rezim namerno proverava ocekivano ispravno ponasanje koje
