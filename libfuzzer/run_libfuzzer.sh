@@ -22,9 +22,22 @@ FUZZ_BINARY="$BUILD_DIR/fuzz_json_parser"
 # FUZZ_SECONDS=30 ./libfuzzer/run_libfuzzer.sh
 FUZZ_SECONDS="${FUZZ_SECONDS:-60}"
 
-# Clang obezbedjuje libFuzzer i sanitizer instrumentaciju. Status 2 znaci da
-# okruzenje nije spremno, a ne da je analizirani parser pao test.
-if ! command -v clang >/dev/null 2>&1; then
+# Izbor Clang kompajlera:
+# - na macOS-u Apple Clang iz Xcode-a ne isporucuje libFuzzer runtime
+#   biblioteku (libclang_rt.fuzzer_osx.a ne postoji u Xcode toolchain-u), pa
+#   linkage sa -fsanitize=fuzzer pada. Homebrew LLVM Clang uvek dolazi sa
+#   kompletanim sanitizer i fuzzer runtime-om, pa se on preferira ako postoji;
+# - na Linux-u se koristi obican clang iz PATH-a.
+# Status 2 znaci da okruzenje nije spremno, a ne da je analizirani parser pao
+# test.
+CLANG_BIN="clang"
+for candidate_clang in /opt/homebrew/opt/llvm/bin/clang /usr/local/opt/llvm/bin/clang; do
+    if [ -x "$candidate_clang" ]; then
+        CLANG_BIN="$candidate_clang"
+        break
+    fi
+done
+if ! command -v "$CLANG_BIN" >/dev/null 2>&1; then
     echo "Nedostaje obavezna komanda: clang" >&2
     exit 2
 fi
@@ -58,7 +71,7 @@ echo "Prevodjenje fuzzer harnessa sa sanitizer instrumentacijom..."
 # libfuzzer/fuzz_json_parser.c je nas fuzzing harness;
 # -lm povezuje matematicku biblioteku;
 # -o "$FUZZ_BINARY" zadaje putanju generisanog fuzzer executable fajla.
-clang -std=c89 -Wall -Wextra -Wpedantic -Werror \
+"$CLANG_BIN" -std=c89 -Wall -Wextra -Wpedantic -Werror \
     -Wno-error=deprecated-declarations \
     -O1 -g -fno-omit-frame-pointer \
     -fsanitize=fuzzer,address,undefined \
@@ -125,7 +138,8 @@ fi
 {
     echo "Verzija alata"
     echo "=============="
-    clang --version | sed -n '1p'
+    # Ispisuje verziju baš onog Clang-a koji je skripta koristila za build.
+    "$CLANG_BIN" --version | sed -n '1p'
     echo
     echo "Trajanje (sekunde): $FUZZ_SECONDS"
     grep -E 'stat::number_of_executed_units|stat::average_exec_per_sec|stat::new_units_added|Done [0-9]+ runs' \

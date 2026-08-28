@@ -80,7 +80,23 @@ Pokretanje koristi `UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1` kako bi ne
 
 Na novijem macOS SDK-u, uključujući Clang Apple/Xcode 21 protiv aktivnog macOSX SDK-a, `sprintf` je označen kao deprecated, pa se u originalnom `json.c` javlja 20 upozorenja klase `-Wdeprecated-declarations` (na linijama 308, 334, 351, 482, 498, 503, 518, 536, 555, 571, 586, 712, 732, 757, 775, 828, 845, 872, 957 itd.). Sa uključenim `-Werror` ta upozorenja postaju hard build greške, pre nego što se fuzzer executable fajl uopšte napravi.
 
-Ovo je svojstvo platforme i novijeg SDK-a, a ne nalaz naše analize, pa originalni upstream kod ne ulazi u izmene. Skripta zato koristi `-Wno-error=deprecated-declarations`, što tu klasu spušta nazad na upozorenja i na Linux-u ponašanje ostaje nepromenjeno. Sve ostale klase upozorenja i dalje, preko `-Werror`, prekidaju build. Pravi sanitizer nalazi ovim ne bivaju zamaskirani: njih prijavljuju ASan i UBSan tokom izvršavanja, a ne ovaj warnings flag kompajlera.
+Ovo je svojstvo platforme i novijeg SDK-a, a ne nalaz naše analize, pa originalni upstream kod ne ulazi u izmene. Skripta zato koristi `-Wno-error=deprecated-declarations`, što tu klasu spušta nazad na upozorenja i na Linux-u ponašanje ostaje nepromenjeno.
+
+### macOS napomena o fuzzer runtime biblioteci
+
+Apple Clang 21 iz kompletnog Xcode-a kompajlira sa `-fsanitize=fuzzer,address,undefined` bez greške, ali njegov toolchain ne isporučuje libFuzzer runtime biblioteku: u `.../XcodeDefault.xctoolchain/usr/lib/clang/21/lib/darwin/` postoje `asan`, `ubsan`, `tsan` i `profile` runtime-ovi, ali nijedan `libclang_rt.fuzzer_osx.a`. Linker zato pada sa `library ... libclang_rt.fuzzer_osx.a not found` iako je kompajliranje uspešno (`ld: library ... not found`, `clang: error: linker command failed`).
+
+Rešenje je zvaničan [Homebrew LLVM](https://formulae.brew.sh/formula/llvm) (`brew install llvm`), čiji Clang dolazi sa kompletanim fuzzer runtime-om za `osx`:
+
+```text
+libclang_rt.fuzzer_osx.a
+libclang_rt.fuzzer_no_main_osx.a
+libclang_rt.fuzzer_interceptors_osx.a
+```
+
+Na pripremnom Apple Silicon računaru potvrđen je Homebrew LLVM Clang 23.1.0 sa gore navedenim runtime bibliotekama. Skripta zato na macOS-u preferira `/opt/homebrew/opt/llvm/bin/clang` (odnosno `/usr/local/opt/llvm/bin/clang` na Intel Mac-u) kada postoji, a na Linux-u i dalje koristi običan `clang` iz PATH-a. Na Linux-u ponašanje skripte ne menja ovo ničim, jer se tamo koristi isti sistemski Clang kao pre.
+
+Sve ostale klase upozorenja i dalje, preko `-Werror`, prekidaju build. Pravi sanitizer nalazi ovim ne bivaju zamaskirani: njih prijavljuju ASan i UBSan tokom izvršavanja, a ne ovaj warnings flag kompajlera.
 
 Opcije pokretanja znače:
 
