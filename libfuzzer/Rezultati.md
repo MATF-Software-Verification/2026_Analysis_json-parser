@@ -176,6 +176,45 @@ Kada je `top->u.object.values` jednak `NULL`, sabiranje `NULL + (string_length +
 
 U drugom prolazu `values` je već alociran i ova linija se ne izvršava na isti način, pa se problem ne javlja.
 
+### Linija 437 u kontekstu izvornog koda
+
+Relevantan deo `json-parser/json.c` (linije 433–448):
+
+```c
+case json_object:
+
+   if (state.first_pass) {
+      json_char **chars = (json_char **) &top->u.object.values;
+      chars[0] += string_length + 1;
+   }
+   else
+   {
+      top->u.object.values [top->u.object.length].name
+         = (json_char *) top->_reserved.object_mem;
+
+      top->u.object.values [top->u.object.length].name_length
+         = string_length;
+
+      (*(json_char **) &top->_reserved.object_mem) += string_length + 1;
+   }
+```
+
+Ova grana se izvršava kada parser u JSON objektu zatvori string ključa, na primer `"name"` u `{"name":"Milos"}`.
+
+U prvom prolazu (`state.first_pass != 0`) parser samo broji i pamti dužine, bez konačne alokacije. Pošto niz `values` tada još ne postoji, autor koristi to polje kao privremeni akumulator dužine ključeva: preko casta se piše na istu memorijsku lokaciju koju u drugom prolazu koristi `values`. U tom momentu polje ima vrednost `NULL`, pa svako sabiranje dužine počinje od nul-pokazivača.
+
+U drugom prolazu ista logika preko `_reserved.object_mem` radi istu akumulaciju, ali taj pokazivač u međuvremenu pokazuje na stvarno alociranu memoriju, pa tu nema aritmetike nad `NULL`.
+
+### Zašto ASan ne prijavljuje ovaj nalaz, a UBSan da
+
+AddressSanitizer proverava memorijske pristupe: pristup van opsega, korišćenje posle oslobađanja, dvostruko oslobađanje. Ovde ne dolazi do pristupa memoriji — izračunava se samo vrednost pokazivača koja se dereferencira. UndefinedBehaviorSanitizer zato ima posebnu proveru za pointer overflow (u stack trace-u `__ubsan_handle_pointer_overflow`), koju uključuje `-fsanitize=undefined` iz naše konfiguracije. Zato je nalaz prijavio UBSan, a ASan u istom build-u ništa nije prijavio.
+
+### Referenca za klasifikaciju nalaza
+
+- [C standard (C11), §6.5.6 Additive operators](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf) — dodavanje celobrojne vrednosti na pokazivač je definirano samo kada pokazivač ukazuje na element (ili jedan iza kraja) niza; nul-pokazivač ne ispunjava taj uslov, pa je ponašanje nedefinisano;
+- [Clang UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html) — grupa provera `pointer-overflow`, koju UBSan izvršava pri ovoj instrumentaciji;
+- sam uzrok je potvrđen pregledom `json-parser/json.c` na zaključanom commitu `8ac4477ad3e63dc107e17ad49484edaa17d18d35`, linije 433–448.
+
 ### Ograničenje i tumačenje
 
 Ovo je nedefinisano ponašanje koje se redovno javlja na normalnom, validnom JSON ulazu sa komentarima. Nije potrebno proizvoljno mutirati ulaz da bi se izazvalo — dovoljan je bilo koji JSON objekat sa ključem kada su komentari uključeni.
