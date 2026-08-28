@@ -13,6 +13,21 @@ sudo apt-get update
 sudo apt-get install -y gcc lcov
 ```
 
+Na macOS-u sa Homebrew-om:
+
+```bash
+xcode-select --install  # samo ako Command Line Tools vec nisu instalirani
+brew install lcov
+```
+
+Paket `lcov` obezbeđuje i komandu `genhtml`. Dostupnost alata može se proveriti komandama:
+
+```bash
+gcc --version
+lcov --version
+genhtml --version
+```
+
 Potrebna je `lcov` verzija 2.0 ili novija zbog korišćenih opcija za obradu grešaka i branch coverage. Skripta prekida rad jasnom porukom ako je dostupna starija verzija.
 
 Korišćene verzije u dokumentovanom pokretanju:
@@ -39,6 +54,32 @@ Skripta:
 5. prikuplja line, function i branch coverage pomoću `lcov`-a;
 6. generiše lokalni HTML izveštaj u ignorisanom direktorijumu `unit_tests/build/coverage-html/`.
 
+## LCOV dokumentacija i poreklo komandi
+
+Korišćene komande zasnovane su na sledećoj dokumentaciji:
+
+- [zvanični LCOV repozitorijum i osnovni workflow](https://github.com/linux-test-project/lcov);
+- [`lcov(1)` dokumentacija](https://manpages.debian.org/unstable/lcov/lcov.1.en.html) za `--capture`, `--directory`, `--output-file`, `--extract`, `--summary`, `--rc` i `--ignore-errors`;
+- [`genhtml(1)` dokumentacija](https://manpages.debian.org/unstable/lcov/genhtml.1.en.html) za `--output-directory`, `--branch-coverage` i `--title`.
+
+Posle instalacije dokumentacija je dostupna i lokalno:
+
+```bash
+man lcov
+man genhtml
+```
+
+Workflow u `run_tests.sh` prati dokumentovani redosled:
+
+1. `gcc --coverage` instrumentiše program i omogućava nastanak `.gcno` i `.gcda` podataka;
+2. testni program se pokreće da bi se zabeležile izvršene linije i grane;
+3. `lcov --capture` prikuplja podatke u sirovi `.info` tracefile;
+4. `lcov --extract` zadržava samo originalni `json-parser/json.c`;
+5. `genhtml` pravi HTML prikaz pokrivenosti;
+6. `lcov --summary` ispisuje zbirne line, function i branch coverage metrike.
+
+`--ignore-errors mismatch` i `--ignore-errors unused` odnose se samo na LCOV obradu coverage podataka, a ne na testne neuspehe. `mismatch` pretvara nepodudarnost povezanih zapisa u upozorenje, dok `unused` dopušta nastavak ako obrazac za izdvajanje ne odgovara nijednom zapisu.
+
 ## Organizacija testova
 
 `test_json_parser.c` sadrži deset grupa standardnih testova:
@@ -57,6 +98,10 @@ Skripta:
 | `test_source_tracking` | red izvornog dokumenta uz `JSON_TRACK_SOURCE` |
 
 Poseban režim `--poznati-nalazi` reprodukuje odstupanja, ali se ne meša sa prolaznim regresionim skupom.
+
+Naziv „poznati nalazi“ znači da ovaj režim ne otkriva probleme ponovo, već deterministički reprodukuje odstupanja koja su ranije pronađena i ručno potvrđena. Prva dva nalaza otkrivena su negativnim graničnim testovima JSON gramatike; nakon nalaza kod objekta proverena je i srodna putanja za niz. Očekivano ponašanje potvrđeno je prema RFC 8259. Treći nalaz otkriven je proverom stvarnih vrednosti `line` i `col`, a njegov uzrok je potvrđen pregledom `cur_col` logike u `json.c`.
+
+Standardni skup mora da prođe 69/69 provera. Režim `--poznati-nalazi` namerno postavlja očekivanja ispravnog ponašanja koja trenutna biblioteka krši, pa vraća neuspešan exit status kada reprodukuje nalaze. `run_tests.sh` taj status obrađuje posebno i proverava tačne oznake sva tri nalaza, čime razlikuje očekivanu reprodukciju od proizvoljnog pada programa. UBSan nalaz aritmetike nad NULL pokazivačem nije deo ove grupe, već zasebne libFuzzer analize.
 
 ## Rezultat standardnih testova
 

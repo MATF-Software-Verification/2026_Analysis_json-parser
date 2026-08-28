@@ -109,80 +109,11 @@ Za svaki alat biće dodat poseban direktorijum sa skriptom za reprodukciju, rezu
 
 ### 1. Jedinični testovi i pokrivenost
 
-Ubuntu/Debian:
-
-```bash
-sudo apt-get install -y gcc lcov
-```
-
-macOS sa Homebrew-om:
-
-```bash
-xcode-select --install  # samo ako Command Line Tools vec nisu instalirani
-brew install lcov
-```
-
-Paket `lcov` na obe platforme obezbeđuje i komandu `genhtml`. Pre pokretanja mogu se proveriti preduslovi:
-
-```bash
-gcc --version
-lcov --version
-genhtml --version
-```
-
-Zatim se iz korena repozitorijuma pokreće:
-
 ```bash
 ./unit_tests/run_tests.sh
 ```
 
-#### LCOV dokumentacija i poreklo komandi
-
-Komande za merenje pokrivenosti zasnovane su na zvaničnoj LCOV dokumentaciji:
-
-- [zvanični LCOV repozitorijum i osnovni workflow](https://github.com/linux-test-project/lcov) — prevođenje sa coverage instrumentacijom, pokretanje programa, `lcov --capture` i generisanje HTML izveštaja;
-- [`lcov(1)` dokumentacija](https://manpages.debian.org/unstable/lcov/lcov.1.en.html) — opcije `--capture`, `--directory`, `--output-file`, `--extract`, `--summary`, `--rc` i `--ignore-errors`;
-- [`genhtml(1)` dokumentacija](https://manpages.debian.org/unstable/lcov/genhtml.1.en.html) — opcije `--output-directory`, `--branch-coverage` i `--title`.
-
-Iste stranice su posle instalacije dostupne i lokalno:
-
-```bash
-man lcov
-man genhtml
-```
-
-Naš workflow prati dokumentovani redosled:
-
-1. `gcc --coverage` instrumentiše program i omogućava nastanak `.gcno` i `.gcda` coverage podataka;
-2. testni program se pokreće da bi se zabeležile stvarno izvršene linije i grane;
-3. `lcov --capture --directory ... --output-file ...` prikuplja podatke u sirovi `.info` tracefile;
-4. `lcov --extract ... '*/json-parser/json.c'` zadržava samo pokrivenost originalnog `json.c`, bez našeg testnog koda;
-5. `genhtml ... --output-directory ... --branch-coverage` pravi HTML prikaz pokrivenosti;
-6. `lcov --summary ...` ispisuje zbirne line, function i branch coverage metrike.
-
-Opcije `--ignore-errors mismatch` i `--ignore-errors unused` ne skrivaju testne neuspehe. One se odnose na LCOV obradu coverage podataka: `mismatch` pretvara nepodudarnost između povezanih zapisa u upozorenje umesto fatalne greške, dok `unused` dopušta nastavak ako obrazac za izdvajanje ne odgovara nijednom zapisu. Njihova tačna značenja dokumentovana su u odeljku `--ignore-errors` man stranice `lcov(1)`.
-
 69/69 provera prolazi; pokrivenost `json.c` 80,9% linija, 100,0% funkcija, 67,9% grana. Detalji: [`unit_tests/Rezultati.md`](unit_tests/Rezultati.md).
-
-#### Poznati nalazi iz inicijalne analize
-
-Tokom inicijalne analize javnog API-ja dodati su granični testovi koji nisu bili obuhvaćeni upstream skupom. Njima su pronađena i ručno potvrđena tri funkcionalna odstupanja:
-
-1. parser prihvata objekat sa završnim zarezom, na primer `{"a":1,}`, iako posle zareza po RFC 8259 mora doći sledeći član;
-2. parser prihvata niz sa završnim zarezom, na primer `[1,2,]`, iako posle zareza mora doći sledeća vrednost;
-3. kada je uključen `JSON_TRACK_SOURCE`, red čvora se ispravno prati, ali kolona ostaje `0` jer se interni brojač `cur_col` ne uvećava pri prolasku kroz karaktere.
-
-Prva dva nalaza otkrivena su negativnim testovima graničnih slučajeva JSON gramatike i potvrđena poređenjem sa gramatikom iz RFC 8259. Nakon nalaza kod objekta proverena je i srodna putanja za niz. Treći nalaz otkriven je proverom stvarnih vrednosti `line` i `col`, a uzrok je potvrđen pregledom implementacije u `json.c`.
-
-Ovi slučajevi su izdvojeni iz standardnog regresionog skupa u poseban režim:
-
-```bash
-./unit_tests/build/test_json_parser --poznati-nalazi
-```
-
-Standardni skup mora da završi sa 69/69 uspešnih provera. Režim `--poznati-nalazi` namerno postavlja očekivanja ispravnog ponašanja koja trenutna verzija biblioteke krši, zbog čega vraća neuspešan exit status kada reprodukuje odstupanja. `run_tests.sh` zato taj status obrađuje posebno i pomoću tačnih oznaka proverava da su reprodukovana baš sva tri dokumentovana nalaza, a ne proizvoljan pad programa.
-
-Naziv „poznati nalazi“ znači da ih skripta ne otkriva ponovo, već deterministički reprodukuje ranije pronađene i potvrđene probleme. Oni su klasifikovani kao funkcionalna odstupanja; direktan bezbednosni uticaj nije utvrđen. UBSan nalaz aritmetike nad NULL pokazivačem ne pripada ovoj grupi, već zasebnoj libFuzzer analizi.
 
 ### 2. Valgrind Memcheck
 
