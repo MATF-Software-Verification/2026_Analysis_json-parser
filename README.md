@@ -28,6 +28,20 @@ Ako je repozitorijum već kloniran bez submodula:
 git submodule update --init --recursive
 ```
 
+Pre pokretanja analiza proveriti da je submodule na analiziranom commit-u:
+
+```bash
+git submodule status
+```
+
+Očekivani rezultat počinje sa:
+
+```text
+ 8ac4477ad3e63dc107e17ad49484edaa17d18d35 json-parser
+```
+
+Početni razmak znači da je submodule na očekivanom commit-u. Znak `-` znači da submodule nije inicijalizovan, dok `+` znači da je trenutno izabran drugi commit.
+
 ## Početna provera
 
 ```bash
@@ -35,13 +49,46 @@ cd json-parser
 ./configure
 make clean
 make
+```
+
+Provera napravljenih biblioteka:
+
+```bash
+# macOS
+file libjsonparser.a libjsonparser.dylib
+
+# Linux
+file libjsonparser.a libjsonparser.so
+```
+
+Na macOS-u `file` treba da prepozna `.dylib`, a na Linux-u `.so` deljenu biblioteku.
+
+Zatim se prevodi upstream test program:
+
+```bash
 cc -std=c89 -ansi -Wall -Wpedantic -Werror \
   -pedantic -pedantic-errors -D_ANSI_SOURCE \
   -DJSON_TRACK_SOURCE -I. json.c tests/test.c -lm -o json-test
-(cd tests && ../json-test)
 ```
 
-Početna provera na neizmenjenom analiziranom commit-u uspešno prevodi statičku i deljenu biblioteku i izvršava postojeći C test program bez neuspešnih provera.
+Provera napravljenog test programa:
+
+```bash
+file json-test
+```
+
+Na macOS-u očekuje se `Mach-O 64-bit executable` (na Apple Silicon-u `arm64`), dok se na Linux-u očekuje ELF izvršni fajl.
+
+Upstream testovi se pokreću iz direktorijuma `tests/`, jer program tamo traži ulazne JSON fajlove:
+
+```bash
+(cd tests && ../json-test)
+echo $?
+```
+
+Zagrade čuvaju trenutni direktorijum: po završetku ostajemo u `json-parser/`. Izlazni kod `0` znači da su upstream testovi uspešno završeni.
+
+Početna provera na neizmenjenom analiziranom commit-u uspešno prevodi statičku biblioteku `libjsonparser.a` i deljenu biblioteku (`libjsonparser.so` na Linux-u ili `libjsonparser.dylib` na macOS-u), a zatim izvršava postojeći C test program bez neuspešnih provera.
 
 ## Izabrane tehnike
 

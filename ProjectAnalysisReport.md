@@ -43,7 +43,7 @@ make clean
 make
 ```
 
-Dobijeni su `libjsonparser.a` i `libjsonparser.so`.
+Dobijaju se `libjsonparser.a` i deljena biblioteka: `libjsonparser.so` na Linux-u, odnosno `libjsonparser.dylib` na macOS-u.
 Prevođenje je završeno bez greške.
 
 ## 5. Postojeći test program

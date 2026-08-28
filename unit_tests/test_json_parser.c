@@ -5,10 +5,16 @@
 
 #include "json.h"
 
+/* Zbirni brojevi pojedinacnih CHECK provera i rezim poznatih odstupanja. */
 static unsigned tests_run = 0;
 static unsigned tests_failed = 0;
 static int known_issues_mode = 0;
 
+/*
+ * Svaki CHECK povecava broj provera. Ne prekida program pri neuspehu, vec
+ * belezi fajl, red i tekst uslova, pa na kraju mozemo videti sve probleme.
+ * do/while(0) omogucava da se makro ponasa kao jedna C naredba.
+ */
 #define CHECK(condition) do { \
    ++tests_run; \
    if (!(condition)) { \
@@ -246,6 +252,7 @@ static void test_number_boundaries(void)
 
 typedef struct
 {
+   /* Broj uspesnih poziva testnog alokatora i odgovarajucih oslobadjanja. */
    unsigned long allocations;
    unsigned long frees;
 } allocation_stats;
@@ -373,6 +380,8 @@ static void test_known_issues(void)
 /* Bira rezim rada, pokrece testove i vraca zbirni status programa. */
 int main(int argc, char **argv)
 {
+   /* Poseban rezim namerno proverava ocekivano ispravno ponasanje koje
+    * trenutna biblioteka krsi, pa svaki reprodukovani nalaz ulazi u failed. */
    if (argc == 2 && strcmp(argv[1], "--poznati-nalazi") == 0)
    {
       known_issues_mode = 1;
@@ -382,6 +391,7 @@ int main(int argc, char **argv)
       return tests_failed == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
    }
 
+   /* Podrazumevani regresioni skup mora proci bez ijednog neuspeha. */
    test_root_primitives();
    test_nested_dom();
    test_strings_and_unicode();
@@ -396,5 +406,6 @@ int main(int argc, char **argv)
    printf("Izvrseno provera: %u\n", tests_run);
    printf("Neuspesnih provera: %u\n", tests_failed);
 
+   /* Shell dobija status 0 samo kada su sve standardne provere prosle. */
    return tests_failed == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
