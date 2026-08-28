@@ -6,16 +6,29 @@ Fuzz testiranje pomoću LLVM `libFuzzer`-a sa uključenim AddressSanitizer i Und
 
 ## Preduslovi
 
+Ubuntu/Debian:
+
 ```bash
 sudo apt-get update
 sudo apt-get install -y clang
 ```
+
+macOS:
+
+```bash
+xcode-select --install  # samo ako Command Line Tools vec nisu instalirani
+clang --version
+```
+
+Apple Command Line Tools obezbeđuje Clang. Korišćeni Clang mora da podržava `-fsanitize=fuzzer,address,undefined`; libFuzzer dokumentacija navodi da ga novije verzije Clang-a uključuju i da posebna instalacija nije potrebna. Na pripremnom Apple Silicon računaru potvrđen je Clang 21.0.0. Za razliku od Valgrind-a, AddressSanitizer zvanično podržava macOS, pa se ova tehnika može lokalno reprodukovati.
 
 Korišćena verzija u dokumentovanom pokretanju:
 
 ```text
 Ubuntu clang version 18.1.3 (1ubuntu1)
 ```
+
+Ovo je verzija kojom su dobijeni sačuvani rezultati projekta. Lokalno macOS pokretanje može koristiti noviji Clang i zbog verzije alata ili platforme imati drugačiji broj izvršenih ulaza, brzinu i detalje stack trace-a. Suštinski nalaz mora se potvrditi prema istoj lokaciji i istoj vrsti nedefinisanog ponašanja, a ne prema identičnoj statistici fuzzinga.
 
 ## Reprodukcija
 
@@ -40,6 +53,16 @@ Fajl `fuzz_json_parser.c` prosleđuje proizvoljan binarni ulaz parseru u dva pro
 
 Oba rezultata se odmah oslobađaju pozivom `json_value_free`. Harness ne pretpostavlja ispravnost ulaza.
 
+Funkcija `LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)` nema sopstveni `main`: njega pri povezivanju obezbeđuje `-fsanitize=fuzzer`. `data` može sadržati proizvoljne bajtove i ugrađeni NUL, pa se parseru prosleđuje eksplicitni `size` umesto rezultata `strlen`. Povratna vrednost `0` znači samo da je harness završio obradu konkretnog ulaza; validnost JSON-a nije uslov uspeha.
+
+## Zvanična dokumentacija
+
+- [LLVM libFuzzer](https://llvm.org/docs/LibFuzzer.html) — fuzz target `LLVMFuzzerTestOneInput`, seed corpus, pokretanje i opcija `-fsanitize=fuzzer`;
+- [Clang AddressSanitizer](https://clang.llvm.org/docs/AddressSanitizer.html) — memorijske greške, `-fsanitize=address`, debug informacije i podržane platforme;
+- [Clang UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html) — vrste nedefinisanog ponašanja, `-fsanitize=undefined` i ponašanje pri nalazu.
+
+Zvanična libFuzzer dokumentacija opisuje isti workflow koji koristi skripta: napraviti fuzz target, prevesti ga sa fuzzer i sanitizer instrumentacijom, pripremiti corpus, pokrenuti executable nad corpus direktorijumom i sačuvati ulaz koji izaziva pad ili sanitizer nalaz.
+
 ## Konfiguracija
 
 Prevođenje koristi:
@@ -51,6 +74,13 @@ Prevođenje koristi:
 ```
 
 Pokretanje koristi `UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1` kako bi nedefinisano ponašanje odmah zaustavilo izvršavanje i sačuvalo stack trace.
+
+Opcije pokretanja znače:
+
+- `-max_total_time` ograničava ukupno trajanje fuzzinga;
+- `-timeout=5` prekida obradu pojedinačnog ulaza koji traje duže od pet sekundi;
+- `-print_final_stats=1` ispisuje završnu statistiku;
+- `-artifact_prefix` određuje gde se čuvaju ulazi koji izazovu pad ili sanitizer nalaz.
 
 ## Nalaz: nedefinisano ponašanje u prvom prolazu parsera
 
