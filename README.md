@@ -128,12 +128,21 @@ Sačuvani rezultat dobijen je na Linux-u. Valgrind nema zvaničnu podršku za sa
 
 ### 3. LLVM libFuzzer
 
+Ubuntu/Debian:
+
 ```bash
 sudo apt-get install -y clang
 ./libfuzzer/run_libfuzzer.sh
 ```
 
-Pronađen potvrđen UBSan nalaz: aritmetika nad NULL pokazivačem u prvom prolazu (`json.c:437`). Detalji: [`libfuzzer/Rezultati.md`](libfuzzer/Rezultati.md).
+macOS (Homebrew LLVM, jer Apple Clang ne isporučuje fuzzer runtime):
+
+```bash
+brew install llvm
+./libfuzzer/run_libfuzzer.sh
+```
+
+Pronađen potvrđen UBSan nalaz: aritmetika nad NULL pokazivačem u prvom prolazu (`json.c:437`) kada su komentari uključeni. Nalaz je reprodukovan na Linux-u (Ubuntu Clang 18.1.3) i lokalno na Apple Silicon macOS-u (Homebrew LLVM Clang 23.1.0), sa identičnim 24-bajtnim reprodukcionim ulazom. Detalji: [`libfuzzer/Rezultati.md`](libfuzzer/Rezultati.md).
 
 ### 4. Clang Static Analyzer
 

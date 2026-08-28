@@ -225,6 +225,10 @@ U praksi, sabiranje nad `NULL` se na većini platformi ponaša kao obično sabir
 
 Nije utvrđen direktan bezbednosni uticaj iz ovog konkretnog nalaza. Parser koristi rezultat ove aritmetike samo u prvom prolazu kao akumulator dužine, ne za stvarni memorijski pristup. Međutim, nedefinisano ponašanje može na nekim platformama ili pod optimizacijama dovesti do neočekivanih rezultata.
 
+### Namera autora i rezultat
+
+Autor parsera je u prvom prolazu iskoristio polje `top->u.object.values` kao privremeni akumulator dužine ključeva, pošto to polje tek u drugom prolazu dobija stvarnu ulogu. Time je izbegao uvođenje zasebne promenljive i zadržao kompaktnu strukturu. Rezultat proračuna je na svim praktičnim platformama tačan, ali sam izraz `NULL + n` je po C standardu (C11, §6.5.6) nedefinisano ponašanje. Zato je UBSan ovu lokaciju prijavio kao `pointer-overflow`, iako parser funkcionalno radi ispravno — Valgrind rezultat i svih 69 jediničnih testova su čisti.
+
 ## Sačuvani rezultati
 
 - `results/izlaz.txt` — puni izlaz pokretanja sa UBSan stack trace-om;
