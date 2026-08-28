@@ -109,8 +109,30 @@ Za svaki alat biće dodat poseban direktorijum sa skriptom za reprodukciju, rezu
 
 ### 1. Jedinični testovi i pokrivenost
 
+Ubuntu/Debian:
+
 ```bash
 sudo apt-get install -y gcc lcov
+```
+
+macOS sa Homebrew-om:
+
+```bash
+xcode-select --install  # samo ako Command Line Tools vec nisu instalirani
+brew install lcov
+```
+
+Paket `lcov` na obe platforme obezbeđuje i komandu `genhtml`. Pre pokretanja mogu se proveriti preduslovi:
+
+```bash
+gcc --version
+lcov --version
+genhtml --version
+```
+
+Zatim se iz korena repozitorijuma pokreće:
+
+```bash
 ./unit_tests/run_tests.sh
 ```
 
