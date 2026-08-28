@@ -2,7 +2,9 @@
 
 ## Cilj i konfiguracija
 
-Analiziran je isključivo `json-parser/json.c`, bez izmene izvornog koda ili submodula. Korišćen je Clang Static Analyzer iz Clang-a 18.1.3 u stvarnoj C89 konfiguraciji:
+Clang Static Analyzer je alat za statičku analizu C, C++ i Objective-C programa. Za razliku od testova, Valgrinda i fuzzinga, on ne pokreće napravljeni program nad konkretnim ulazom, već simbolički prati moguće putanje kroz izvorni kod. Analiza je path-sensitive i interproceduralna: stanje promenljivih prati po granama i kroz pozive funkcija. Zbog aproksimacije mogućih putanja upozorenje nije automatski dokaz greške, pa je svaki nalaz ručno pregledan.
+
+Analiziran je isključivo `json-parser/json.c`, bez izmene izvornog koda ili submodula. Sačuvani Linux rezultat dobijen je Clang-om 18.1.3 u stvarnoj C89 konfiguraciji:
 
 ```sh
 clang --analyze -std=c89 -pedantic -Ijson-parser \
@@ -12,14 +14,58 @@ clang --analyze -std=c89 -pedantic -Ijson-parser \
 
 Analiza je završena izlaznim kodom 0 i prijavila je **3 upozorenja**. `-std=c89` aktivira C89 grane u `json.h` i `json.c` (na primer, `json_int_t` je `long`, a `JSON_INT_MAX` je `LONG_MAX`). Time nalaz nije dobijen analizom pod podrazumevanim novijim C standardom.
 
+## Preduslovi i lokalna reprodukcija
+
+Ubuntu/Debian:
+
+```sh
+sudo apt-get update
+sudo apt-get install -y clang python3
+clang --version
+python3 --version
+```
+
+macOS koristi Clang koji dolazi uz Xcode Command Line Tools ili Xcode:
+
+```sh
+xcode-select --install  # samo ako alati već nisu instalirani
+clang --version
+python3 --version
+```
+
+Za ovu tehniku nije potreban libFuzzer runtime, niti se program linkuje, pa sistemski Apple Clang može normalno da izvrši analizu. Po želji se može izabrati Homebrew LLVM preko promenljive `CLANG`.
+
 Reprodukcija:
 
 ```sh
-cd /home/gamzatore/Workspace/2026_Analysis_json-parser
 sh clang_static_analyzer/run_analysis.sh
 ```
 
+Eksplicitno korišćenje Homebrew LLVM Clang-a na Apple Silicon Mac-u:
+
+```sh
+CLANG=/opt/homebrew/opt/llvm/bin/clang sh clang_static_analyzer/run_analysis.sh
+```
+
 Skripta ponovo stvara tekstualni trag, PLIST izveštaj i TSV sažetak u `clang_static_analyzer/results/`.
+
+### Značenje opcija
+
+- `--analyze` — pokreće Clang Static Analyzer umesto običnog prevođenja i linkovanja;
+- `-std=c89` — bira C89 jezički standard koji odgovara upstream biblioteci;
+- `-pedantic` — uključuje dijagnostiku odstupanja od izabranog standarda;
+- `-Ijson-parser` — dodaje direktorijum zaglavlja da bi analiza pronašla `json.h`;
+- `-Xanalyzer` — narednu opciju prosleđuje direktno Analyzer-u;
+- `-analyzer-checker=core,unix,security,deadcode` — uključuje osnovne, Unix, bezbednosne i dead-code checkere;
+- `-analyzer-output=text` — pravi tekstualni, čoveku čitljiv prikaz putanje nalaza;
+- `-analyzer-output=plist` — pravi mašinski čitljiv PLIST/XML izveštaj;
+- `-o results/report.plist` — bira putanju PLIST izlaza.
+
+Skripta namerno pokreće istu analizu dva puta: prvi put za tekstualni trag, a drugi put za PLIST. To nisu dve različite tehnike niti šest različitih nalaza; ista tri upozorenja predstavljena su u dva formata.
+
+## Reprodukcija na Apple Silicon macOS-u
+
+Lokalno pokretanje sistemskim Apple Clang-om 21.0.0 (`arm64-apple-darwin`) završeno je uspešno i ponovo je dalo ista tri checkera na istim linijama: jedan `deadcode.DeadStores` i dva `security.insecureAPI.strcpy`. macOS SDK u `plist_stderr.txt` dodatno prikazuje širenje `strcpy` makroa kroz sistemsko zaglavlje `secure/_string.h`; to su pomoćne note o tome kako je poziv predstavljen u tom SDK-u, a ne dodatni nalazi. Završni red `3 warnings generated.` potvrđuje isti broj upozorenja kao na Linux-u.
 
 ## Sažetak klasifikacije
 
@@ -63,6 +109,22 @@ Nema nalaza koji su nakon pregleda označeni kao false positive. Bezbednosni che
 - `results/sirovi_izlaz.txt` — kompletan tekstualni izlaz stvarnog pokretanja;
 - `results/nalazi.tsv` — sažet mašinski čitljiv spisak;
 - `results/okruzenje.txt` — verzija, konfiguracija i komanda;
-- `results/report.plist` — generiše skripta kao mašinski čitljiv Analyzer izveštaj.
+- `results/report.plist` — mašinski čitljiv Analyzer izveštaj sa putanjama i metapodacima;
+- `results/plist_stdout.txt` — standardni izlaz PLIST prolaza; normalno je prazan;
+- `results/plist_stderr.txt` — Analyzer upozorenja i pomoćne compiler/SDK note iz PLIST prolaza; njegovo postojanje ne označava grešku.
 
 HTML/build izlaz nije sačuvan, u skladu sa zadatim opsegom.
+
+## Zvanična dokumentacija
+
+- [Clang Static Analyzer](https://clang.llvm.org/docs/ClangStaticAnalyzer.html) — opis path-sensitive, interproceduralne analize zasnovane na simboličkom izvršavanju;
+- [Command Line Usage](https://clang.llvm.org/docs/analyzer/user-docs/CommandLineUsage.html) — zvanični načini pokretanja Analyzer-a;
+- [Configuring the Analyzer](https://clang.llvm.org/docs/analyzer/user-docs/Options.html) — razlika između `--analyze`, Analyzer opcija, checkera i prosleđivanja preko `-Xanalyzer`;
+- [Available Checkers](https://clang.llvm.org/docs/analyzer/checkers.html) — spisak i opis dostupnih checkera.
+
+Lokalni pregled podržanih opcija i checkera:
+
+```sh
+clang --help
+clang --analyze -Xanalyzer -analyzer-checker-help
+```
