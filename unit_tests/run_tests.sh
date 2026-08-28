@@ -39,10 +39,25 @@ mkdir -p "$BUILD_DIR" "$RESULTS_DIR"
 
 echo "Prevodjenje testova sa coverage instrumentacijom..."
 cd "$REPO_ROOT"
-# Opcije: strogi ANSI C89, upozorenja kao greske, bez optimizacije, debug
-# simboli, coverage instrumentacija, pracenje izvornog polozaja i putanja do
-# json.h. Zajedno prevodimo originalni json.c i nas test_json_parser.c,
-# povezujemo matematicku biblioteku (-lm) i zadajemo ime izlaznog programa.
+# Opcije kompajlera:
+# -std=c89          bira C89 standard;
+# -ansi             ukljucuje strogi ANSI C rezim;
+# -Wall             ukljucuje osnovni skup upozorenja;
+# -Wextra           ukljucuje dodatna upozorenja;
+# -Wpedantic        upozorava na odstupanja od izabranog C standarda;
+# -Werror           svako upozorenje pretvara u gresku pri prevodjenju;
+# -pedantic         zahteva strogo postovanje izabranog C standarda;
+# -pedantic-errors  pedantic upozorenja pretvara u greske;
+# -O0               iskljucuje optimizacije radi jasnijeg coverage rezultata;
+# -g                dodaje debug informacije u izvrsni fajl;
+# --coverage        instrumentise program i generise podatke za gcov/lcov;
+# -D_ANSI_SOURCE    definise makro koji aktivira ANSI granu izvornog koda;
+# -DJSON_TRACK_SOURCE definise makro koji dodaje line i col polja u json_value;
+# -Ijson-parser     dodaje json-parser/ u putanje za pronalazenje json.h;
+# json-parser/json.c je originalna implementacija koju analiziramo;
+# unit_tests/test_json_parser.c je nas testni program;
+# -lm               linkuje matematicku biblioteku;
+# -o "$TEST_BINARY" zadaje putanju i ime izlaznog testnog programa.
 gcc \
     -std=c89 -ansi -Wall -Wextra -Wpedantic -Werror \
     -pedantic -pedantic-errors -O0 -g --coverage \
