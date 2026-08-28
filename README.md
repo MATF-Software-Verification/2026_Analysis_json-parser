@@ -124,6 +124,8 @@ sudo apt-get install -y gcc valgrind
 
 0 grešaka, 0 curenja memorije na oba skupa testova. Detalji: [`valgrind/Rezultati.md`](valgrind/Rezultati.md).
 
+Sačuvani rezultat dobijen je na Linux-u. Valgrind nema zvaničnu podršku za savremeni Apple Silicon (`arm64`) macOS, pa ova tehnika nije predviđena za lokalnu reprodukciju na tom računaru.
+
 ### 3. LLVM libFuzzer
 
 ```bash
