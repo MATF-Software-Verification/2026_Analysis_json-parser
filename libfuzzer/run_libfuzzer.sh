@@ -42,6 +42,10 @@ echo "Prevodjenje fuzzer harnessa sa sanitizer instrumentacijom..."
 # -std=c89 zahteva C89 za originalni parser i nas harness;
 # -Wall, -Wextra i -Wpedantic ukljucuju stroga upozorenja;
 # -Werror pretvara upozorenja u build greske;
+# -Wno-error=deprecated-declarations spusta upozorenja o deprecated funkcijama
+# nazad na upozorenja umesto gresaka. Novi macOS SDK oznacava sprintf kao
+# deprecated, sto je svojstvo platforme, a ne nalog u originalnom upstream
+# kodu koji se ne menja. Sve ostale klase upozorenja i dalje prekidaju build.
 # -O1 daje optimizovan, ali jos uvek citljiv sanitizer build;
 # -g dodaje debug podatke za imena funkcija i linije izvornog koda;
 # -fno-omit-frame-pointer cuva frame pointer radi pouzdanijeg stack trace-a;
@@ -55,6 +59,7 @@ echo "Prevodjenje fuzzer harnessa sa sanitizer instrumentacijom..."
 # -lm povezuje matematicku biblioteku;
 # -o "$FUZZ_BINARY" zadaje putanju generisanog fuzzer executable fajla.
 clang -std=c89 -Wall -Wextra -Wpedantic -Werror \
+    -Wno-error=deprecated-declarations \
     -O1 -g -fno-omit-frame-pointer \
     -fsanitize=fuzzer,address,undefined \
     -D_ANSI_SOURCE -Ijson-parser \

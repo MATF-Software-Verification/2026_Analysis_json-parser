@@ -69,11 +69,18 @@ Prevođenje koristi:
 
 ```text
 -std=c89 -Wall -Wextra -Wpedantic -Werror
--fsanitize=fuzzer,address,undefined
--O1 -g -fno-omit-frame-pointer
+ -Wno-error=deprecated-declarations (samo na macOS-u zbog deprecated sprintf)
+ -fsanitize=fuzzer,address,undefined
+ -O1 -g -fno-omit-frame-pointer
 ```
 
 Pokretanje koristi `UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1` kako bi nedefinisano ponašanje odmah zaustavilo izvršavanje i sačuvalo stack trace.
+
+### macOS napomena o deprecated-declarations
+
+Na novijem macOS SDK-u, uključujući Clang Apple/Xcode 21 protiv aktivnog macOSX SDK-a, `sprintf` je označen kao deprecated, pa se u originalnom `json.c` javlja 20 upozorenja klase `-Wdeprecated-declarations` (na linijama 308, 334, 351, 482, 498, 503, 518, 536, 555, 571, 586, 712, 732, 757, 775, 828, 845, 872, 957 itd.). Sa uključenim `-Werror` ta upozorenja postaju hard build greške, pre nego što se fuzzer executable fajl uopšte napravi.
+
+Ovo je svojstvo platforme i novijeg SDK-a, a ne nalaz naše analize, pa originalni upstream kod ne ulazi u izmene. Skripta zato koristi `-Wno-error=deprecated-declarations`, što tu klasu spušta nazad na upozorenja i na Linux-u ponašanje ostaje nepromenjeno. Sve ostale klase upozorenja i dalje, preko `-Werror`, prekidaju build. Pravi sanitizer nalazi ovim ne bivaju zamaskirani: njih prijavljuju ASan i UBSan tokom izvršavanja, a ne ovaj warnings flag kompajlera.
 
 Opcije pokretanja znače:
 
