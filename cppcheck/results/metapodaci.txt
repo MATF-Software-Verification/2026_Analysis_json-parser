@@ -1,4 +1,4 @@
-Cppcheck verzija: Cppcheck 2.13.0
+Cppcheck verzija: Cppcheck 2.21.0
 Standard: C89
 Platforma: unix64
 Izvor: json-parser/json.c

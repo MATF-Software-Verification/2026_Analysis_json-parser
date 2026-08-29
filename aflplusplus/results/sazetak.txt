@@ -1,14 +1,13 @@
 Verzija alata
 ==============
-Ubuntu clang version 17.0.6 (9ubuntu1)
-afl-fuzz++4.09c
+Homebrew clang version 23.1.0
+afl-fuzz++5.02c
 
-Trajanje (sekunde): 30
+Trajanje (sekunde): 60
 
-Korisna statistika
-==================
-[1;94m[*] [0mStatistics: 372 new corpus items found, 75.08% coverage achieved, 0 crashes saved, 0 timeouts saved, total runtime 0 days, 0 hrs, 0 min, 30 sec[0m
+Statistika
+==========
 
-Crashes: 0
-Hangs: 0
-Queue: 379
+Crashes:        0
+Hangs:        0
+Queue:        6
