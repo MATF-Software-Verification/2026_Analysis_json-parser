@@ -169,7 +169,9 @@ brew install afl++
 ./aflplusplus/run_afl.sh
 ```
 
-Sačuvano 30-sekundno pokretanje nije pronašlo crash ni hang (75,08% coverage), ali je naknadno utvrđeno da je stara skripta executable nenamerno uključila kao sedmi seed; konačne brojčane metrike zahtevaju novo pokretanje ispravljene skripte. AFL++ je drugi, nezavisni coverage-guided fuzzer pored libFuzzer-a: zaseban `afl-fuzz` proces upravlja običnim harness executable-om (ulaz preko stdin), dok libFuzzer radi in-process direktnim pozivom `LLVMFuzzerTestOneInput`. AFL++ build ne uključuje sanitizers, pa traži prirodne crash-eve i hang-ove, ne nedefinisano ponašanje koje samo po sebi ne ruši proces — zato njegov čist rezultat nije kontradikcija UBSan nalazu iz tehnike 3. Detalji: [`aflplusplus/Rezultati.md`](aflplusplus/Rezultati.md).
+Napomena: Homebrew AFL++ 5.02c na Apple Silicon macOS-u pada pre početka kampanje na sistemskom ograničenju SysV deljene memorije (`shmget() failed`); workaround (`afl-system-config`) je van opsega projekta, pa je sačuvani rezultat iz Linux okruženja — slično kao kod Valgrinda.
+
+Sačuvano Linux 30-sekundno pokretanje nije pronašlo crash ni hang (75,08% coverage), ali je naknadno utvrđeno da je stara skripta executable nenamerno uključila kao sedmi seed. AFL++ je drugi, nezavisni coverage-guided fuzzer pored libFuzzer-a: zaseban `afl-fuzz` proces upravlja običnim harness executable-om (ulaz preko stdin), dok libFuzzer radi in-process direktnim pozivom `LLVMFuzzerTestOneInput`. AFL++ build ne uključuje sanitizers, pa traži prirodne crash-eve i hang-ove, ne nedefinisano ponašanje koje samo po sebi ne ruši proces — zato njegov čist rezultat nije kontradikcija UBSan nalazu iz tehnike 3. Detalji: [`aflplusplus/Rezultati.md`](aflplusplus/Rezultati.md).
 
 ### 6. cppcheck
 

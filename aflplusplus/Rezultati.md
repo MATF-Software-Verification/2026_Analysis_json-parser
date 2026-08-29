@@ -130,7 +130,19 @@ orig:fuzz_harness
 Some test cases are huge (127 kB)
 ```
 
-Sedmi seed bio je binarni `fuzz_harness`, veličine oko 127 kB. To ne poništava zabeleženu činjenicu da u toj kampanji nije sačuvan crash ni hang, ali znači da statistike queue-a, brzine i coverage-a ne predstavljaju čistu kampanju pokrenutu samo iz šest dokumentovanih JSON seedova. Skripta je zato ispravljena tako da koristi poseban `build/corpus/`, dok executable ostaje u `build/`. Nakon izmene potrebno je novo pokretanje za konačno poređenje statistika.
+Sedmi seed bio je binarni `fuzz_harness`, veličine oko 127 kB. To ne poništava zabeleženu činjenicu da u toj kampanji nije sačuvan crash ni hang, ali znači da statistike queue-a, brzine i coverage-a ne predstavljaju čistu kampanju pokrenutu samo iz šest dokumentovanih JSON seedova. Skripta je zato ispravljena tako da koristi poseban `build/corpus/`, dok executable ostaje u `build/`.
+
+### Neuspešno lokalno pokretanje na Apple Silicon macOS-u
+
+Ispravljena skripta je pokrenuta i na Apple Silicon Mac-u (Homebrew LLVM Clang 23.1.0, `afl-fuzz++5.02c`). Build harnessa i učitavanje šest seedova prolaze, ali kampanja pada pre početka fuzzing-a:
+
+```text
+[-] SYSTEM ERROR : shmget() failed, try running afl-system-config
+    Stop location : afl_shm_init(), src/afl-sharedmem.c:344
+    OS message : Invalid argument
+```
+
+Uzrok je sistemski: AFL++ za coverage bitmap koristi SysV deljenu memoriju koju macOS podrazumevano ne dozvoljava u traženoj veličini; alat sam predlaže pokretanje `afl-system-config` za izmenu sistemskih parametara. To je workaround van opsega projekta (ista kategorija kao Valgrind na arm64 macOS-u), pa ovo pokretanje ne daje fuzzing rezultat i nema uticaja na sačuvane rezultate. Sačuvani rezultat ostaje onaj iz Linux okruženja.
 
 ## Tumačenje i ograničenja
 
@@ -140,7 +152,7 @@ Ograničenja:
 
 - Trajanje od 30 sekundi je demonstrativno; duže pokretanje bi pokrilo više putanja.
 - AFL++ bez uključenih sanitizera ne može otkriti nedefinisano ponašanje koje ne izaziva pad procesa. UBSan nalaz pronađen libFuzzer-om (aritmetika nad NULL u prvom prolazu) AFL++ ne bi otkrio jer ne izaziva segfault.
-- Sačuvana statistika potiče iz starog pokretanja sa nenamernim sedmim binarnim seedom; konačan rezultat ispravljene skripte tek treba lokalno reprodukovati.
+- Sačuvana statistika potiče iz starog pokretanja sa nenamernim sedmim binarnim seedom; pokušaj reprodukcije na Apple Silicon macOS-u pao je na sistemskom ograničenju deljene memorije (`shmget()`), pa sačuvani Linux rezultat ostaje dokaz za ovu tehniku.
 
 ## Sačuvani rezultati
 
@@ -149,7 +161,7 @@ Ograničenja:
 
 ## Zaključak
 
-Sačuvano AFL++ pokretanje nije pronašlo crash-eve niti hang-ove za 30 sekundi i prijavilo je 75,08% coverage i 372 nova korpus elementa. Međutim, zbog nenamernog binarnog sedmog seeda, numeričke metrike se tretiraju kao istorijski rezultat sa dokumentovanim ograničenjem dok se ispravljena skripta ponovo ne pokrene. Odsustvo UBSan nalaza je očekivano: AFL++ bez sanitizera ne može otkriti nedefinisano ponašanje koje ne izaziva prirodni pad.
+Sačuvano AFL++ pokretanje nije pronašlo crash-eve niti hang-ove za 30 sekundi i prijavilo je 75,08% coverage i 372 nova korpus elementa — uz dokumentovano ograničenje nenamernog sedmog binarnog seeda. Pokušaj reprodukcije na Apple Silicon Mac-u pao je pre početka kampanje na macOS ograničenju SysV deljene memorije, pa je ova tehnika dokumentovana iz Linux okruženja, na sličan način kao Valgrind. Odsustvo UBSan nalaza je očekivano: AFL++ bez sanitizera ne može otkriti nedefinisano ponašanje koje ne izaziva prirodni pad.
 
 ## Zvanična dokumentacija
 
