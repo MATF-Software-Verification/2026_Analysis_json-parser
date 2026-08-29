@@ -2,13 +2,35 @@
 
 ## Cilj
 
-Nezavisno coverage-guided fuzz testiranje pomoću AFL++ alata. Ovo je prvi od dva alata koji nisu obrađeni na vežbama.
+Nezavisno coverage-guided fuzz testiranje pomoću AFL++ alata. Ovo je prvi od dva alata koji nisu obrađeni na vežbama. AFL++ mutira početni korpus, meri edge coverage instrumentisanog programa i zadržava ulaze koji otkrivaju nove putanje. Crash ulaze odvaja u `crashes/`, prekoračenja timeout-a u `hangs/`, a zanimljive ulaze u `queue/`.
+
+## Razlika u odnosu na libFuzzer
+
+Oba alata su coverage-guided fuzzeri, ali imaju različitu arhitekturu:
+
+| Osobina | libFuzzer | AFL++ u ovom projektu |
+|---|---|---|
+| Način rada | in-process runtime linkovan sa ciljem | zaseban `afl-fuzz` proces upravlja executable-om |
+| Harness interfejs | `LLVMFuzzerTestOneInput(data, size)` | običan `main()` koji čita `stdin` |
+| Instrumentacija | `-fsanitize=fuzzer,address,undefined` | `afl-clang-fast` coverage instrumentacija |
+| Detekcija u našoj konfiguraciji | coverage + ASan + UBSan | coverage + prirodni crash + timeout |
+| Glavni artefakti | corpus i `crash-*` ulaz | `queue/`, `crashes/`, `hangs/`, `fuzzer_stats` |
+
+Zato rezultati nisu kontradiktorni: libFuzzer build je uz UBSan prijavio aritmetiku nad NULL pokazivačem, dok AFL++ bez sanitizera ne prijavljuje nedefinisano ponašanje koje samo po sebi ne ruši proces.
 
 ## Preduslovi
 
 ```bash
 sudo apt-get update
 sudo apt-get install -y afl++
+```
+
+Na macOS-u se aktuelni AFL++ može instalirati preko Homebrew-a:
+
+```bash
+brew install afl++
+afl-clang-fast --version
+afl-fuzz --version
 ```
 
 Korišćene verzije u dokumentovanom pokretanju:
@@ -36,12 +58,12 @@ Napomena: na sistemima gde `core_pattern` nije postavljen na `core` (npr. Ubuntu
 
 ## Harness
 
-Fajl `fuzz_harness.c` čita proizvoljan binarni ulaz sa stdin i prosleđuje ga parseru u dva prolaza:
+Fajl `fuzz_harness.c` je analysis-owned adapter. Čita najviše 4095 bajtova proizvoljnog binarnog ulaza sa `stdin`, ostavlja jedan bajt za završni NUL i prosleđuje stvarnu dužinu parseru u dva režima:
 
 1. strogi režim putem `json_parse`;
 2. režim sa komentarima putem `json_parse_ex` sa `json_enable_comments`.
 
-Oba rezultata se odmah oslobađaju. Harness ne pretpostavlva ispravnost ulaza.
+Oba rezultata se odmah oslobađaju. Harness ne pretpostavlja ispravnost ulaza. Njegov status 0 znači samo da konkretan ulaz nije prirodno srušio proces; odbijanje neispravnog JSON-a je normalan ishod.
 
 ## Seed korpus
 
@@ -71,6 +93,15 @@ Pokretanje koristi:
 afl-fuzz -i <corpus> -o <findings> -V <seconds> -t 5000 -m none
 ```
 
+- `-i` — direktorijum koji sadrži isključivo početne seed fajlove;
+- `-o` — koren AFL++ kampanje (`queue`, `crashes`, `hangs` i statistika);
+- `-V` — automatski završava demonstrativnu kampanju posle zadatog vremena;
+- `-t 5000` — izvršavanje duže od 5000 ms klasifikuje kao hang;
+- `-m none` — ne nameće dodatni AFL++ memory limit;
+- `--` — razdvaja opcije fuzera od komande ciljnog programa.
+
+Promenljiva `AFL_SKIP_CRASHES=1` odnosi se samo na preskakanje crashujućih početnih seedova tokom dry run-a; novi crash-evi pronađeni fuzzingom i dalje se čuvaju. `AFL_I_DONT_CARE_ABOUT_MISSING_CRASHES=1` zaobilazi Linux `core_pattern` zaštitu, što može otežati razlikovanje crash-a od timeout-a, dok `AFL_SKIP_CPUFREQ=1` izbegava zahtev za promenom CPU governor-a.
+
 ## Rezultat
 
 Dokumentovano pokretanje trajalo je 30 sekundi i završilo je sa statusom 0.
@@ -89,6 +120,18 @@ Statistics: 372 new corpus items found, 75.08% coverage achieved,
 | Hang-ova | 0 |
 | Queue elemenata | 379 |
 
+### Naknadno utvrđeno ograničenje sačuvanog pokretanja
+
+Pregledom sirovog izlaza utvrđeno je da je prvobitna skripta kao `-i` direktorijum prosledila ceo `build/`. Pošto se executable takođe nalazio u tom direktorijumu, AFL++ je učitao **7**, a ne 6 početnih seedova:
+
+```text
+Loaded a total of 7 seeds.
+orig:fuzz_harness
+Some test cases are huge (127 kB)
+```
+
+Sedmi seed bio je binarni `fuzz_harness`, veličine oko 127 kB. To ne poništava zabeleženu činjenicu da u toj kampanji nije sačuvan crash ni hang, ali znači da statistike queue-a, brzine i coverage-a ne predstavljaju čistu kampanju pokrenutu samo iz šest dokumentovanih JSON seedova. Skripta je zato ispravljena tako da koristi poseban `build/corpus/`, dok executable ostaje u `build/`. Nakon izmene potrebno je novo pokretanje za konačno poređenje statistika.
+
 ## Tumačenje i ograničenja
 
 AFL++ je u 30 sekundi izvršio parser nad stotinama mutiranih ulaza i postigao 75,08% coverage bez pronalaska crash-eva ili hang-ova. Ovo je očekivan rezultat za kratko trajanje nad stabilnim parserom.
@@ -97,7 +140,7 @@ Ograničenja:
 
 - Trajanje od 30 sekundi je demonstrativno; duže pokretanje bi pokrilo više putanja.
 - AFL++ bez uključenih sanitizera ne može otkriti nedefinisano ponašanje koje ne izaziva pad procesa. UBSan nalaz pronađen libFuzzer-om (aritmetika nad NULL u prvom prolazu) AFL++ ne bi otkrio jer ne izaziva segfault.
-- `AFL_SKIP_CRASHES=1` znači da crash-evi ne bi bili sačuvani kao artefakti, ali se i dalje registrovani u statistici. U ovom pokretanju ih nije bilo.
+- Sačuvana statistika potiče iz starog pokretanja sa nenamernim sedmim binarnim seedom; konačan rezultat ispravljene skripte tek treba lokalno reprodukovati.
 
 ## Sačuvani rezultati
 
@@ -106,4 +149,18 @@ Ograničenja:
 
 ## Zaključak
 
-AFL++ fuzzing nije pronašao crash-eve niti hang-ove u 30-sekundnom pokretanju. Alat je uspešno istražio 75,08% coverage i generisao 372 nova korpus elementa. Rezultat je konzistentan sa libFuzzer rezultatom: parser ne pada na proizvoljnom ulazu, ali libFuzzer sa UBSan-om pronalazi nedefinisano ponašanje koje AFL++ bez sanitizera ne može otkriti.
+Sačuvano AFL++ pokretanje nije pronašlo crash-eve niti hang-ove za 30 sekundi i prijavilo je 75,08% coverage i 372 nova korpus elementa. Međutim, zbog nenamernog binarnog sedmog seeda, numeričke metrike se tretiraju kao istorijski rezultat sa dokumentovanim ograničenjem dok se ispravljena skripta ponovo ne pokrene. Odsustvo UBSan nalaza je očekivano: AFL++ bez sanitizera ne može otkriti nedefinisano ponašanje koje ne izaziva prirodni pad.
+
+## Zvanična dokumentacija
+
+- [AFL++ dokumentacija](https://aflplus.plus/docs/) — početna tačka za instrumentaciju, korpus i pokretanje kampanje;
+- [Fuzzing in Depth](https://aflplus.plus/docs/fuzzing_in_depth/) — instrumentisanje cilja, izbor početnog korpusa i coverage-guided tok;
+- [AFL++ environment variables](https://aflplus.plus/docs/env_variables/) — značenje `AFL_*` promenljivih;
+- [AFL++ instalacija](https://aflplus.plus/docs/install/) — podržani načini instalacije, uključujući macOS napomene.
+
+Lokalna dokumentacija:
+
+```bash
+afl-fuzz -h
+afl-clang-fast -hh
+```
